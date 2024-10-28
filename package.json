@@ -3,24 +3,74 @@
   "displayName": "backImage",
   "description": "This plugin allows you to add a background image.",
   "version": "0.0.1",
+  "license": "MIT",
   "engines": {
     "vscode": "^1.94.0"
   },
   "categories": [
     "Other"
   ],
-  "activationEvents": [],
+  "extensionKind": [
+    "ui",
+    "workspace"
+  ],
+  "activationEvents": [
+    "*"
+  ],
   "main": "./dist/extension.js",
+  "l10n": "./l10n",
   "contributes": {
+    "keybindings": [],
     "commands": [
       {
-        "command": "backimage.helloWorld",
-        "title": "Hello World"
+        "command": "backimage.refresh",
+        "title": "refresh"
+      },
+      {
+        "command": "backimage.home",
+        "title": "home"
       }
-    ]
+    ],
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "backimage-explorer",
+          "title": "BackImage",
+          "icon": "resources/icon.png"
+        }
+      ]
+    },
+    "views": {
+      "backimage-explorer": [
+        {
+          "id": "backimage.readerView",
+          "type": "webview",
+          "name": "%backimage.img-explorer%"
+        }
+      ]
+    },
+    "menus": {
+      "view/title": [
+        {
+          "command": "backimage.refresh",
+          "group": "navigation",
+          "when": "view == backimage.readerView"
+        }
+      ]
+    },
+    "configuration": {}
+  },
+  "bugs": {
+    "url": "https://github.com/ThunLights/BackImage/issues"
+  },
+  "homepage": "https://github.com/ThunLights/BackImage",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ThunLights/BackImage.git"
   },
   "scripts": {
     "vscode:prepublish": "npm run package",
+    "vscode:uninstall": "node ./dist/uninstall.js",
     "compile": "webpack",
     "watch": "webpack --watch",
     "package": "webpack --mode production --devtool hidden-source-map",
