@@ -2,7 +2,7 @@ import { tmpdir } from "os";
 import fs from "fs";
 import path from "path";
 
-import { l10n, window } from "vscode";
+import { commands, l10n, window } from "vscode";
 
 import { BACKUP_CSS_PATH, BACKUP_JS_PATH, ENCODING } from "../utils/constants";
 import { basePath, cssPath, jsPath } from "../utils/vscodePath";
@@ -56,13 +56,30 @@ export class FileBackuController {
         }
     }
 
-    public async setup() {
+    public async setup(): Promise<void> {
         if (this.hasBackup) {
             return;
         }
 
         const content = this.getContent;
+
         await this.saveContentTo(BACKUP_JS_PATH, content.js);
         await this.saveContentTo(BACKUP_CSS_PATH, content.css);
+
+        await commands.executeCommand("workbench.action.reloadWindow");
+    }
+
+    public async restore(): Promise<void> {
+        if (!this.hasBackup) {
+            return;
+        }
+
+        const css = fs.readFileSync(BACKUP_CSS_PATH, ENCODING);
+        const js = fs.readFileSync(BACKUP_JS_PATH, ENCODING);
+
+        await this.saveContentTo(cssPath, css);
+        await this.saveContentTo(jsPath, js);
+
+        await commands.executeCommand("workbench.action.reloadWindow");
     }
 };
