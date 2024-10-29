@@ -4,6 +4,7 @@
   "description": "This plugin allows you to add a background image.",
   "version": "0.0.1",
   "license": "MIT",
+  "publisher": "robot",
   "engines": {
     "vscode": "^1.94.0"
   },
@@ -86,6 +87,7 @@
     "@types/vscode": "^1.94.0",
     "@typescript-eslint/eslint-plugin": "^8.10.0",
     "@typescript-eslint/parser": "^8.7.0",
+    "@vscode/sudo-prompt": "^9.3.1",
     "@vscode/test-cli": "^0.0.10",
     "@vscode/test-electron": "^2.4.1",
     "eslint": "^9.13.0",
