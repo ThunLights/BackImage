@@ -84,6 +84,7 @@
   "devDependencies": {
     "@types/mocha": "^10.0.9",
     "@types/node": "20.x",
+    "@types/uglify-js": "^3.17.5",
     "@types/vscode": "^1.94.0",
     "@typescript-eslint/eslint-plugin": "^8.10.0",
     "@typescript-eslint/parser": "^8.7.0",
@@ -97,6 +98,7 @@
     "webpack-cli": "^5.1.4"
   },
   "dependencies": {
-    "backimage": "file:"
+    "backimage": "file:",
+    "uglify-js": "^3.19.3"
   }
 }
