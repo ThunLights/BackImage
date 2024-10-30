@@ -14,4 +14,7 @@ export namespace utils {
     export function escape(content: string): string {
         return content.replaceAll(`"`, `\"`);
     }
+    export function withIIFE(source: string) {
+        return `;(function() { ${source} })();`;
+    }
 };
