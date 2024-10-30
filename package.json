@@ -24,12 +24,9 @@
     "keybindings": [],
     "commands": [
       {
-        "command": "backimage.refresh",
-        "title": "refresh"
-      },
-      {
-        "command": "backimage.home",
-        "title": "home"
+        "command": "extension.backimage.refresh",
+        "title": "%backimage.refresh-title%",
+        "icon": "$(refresh)"
       }
     ],
     "viewsContainers": {
@@ -44,7 +41,7 @@
     "views": {
       "backimage-explorer": [
         {
-          "id": "backimage.readerView",
+          "id": "extension.backimage.readerView",
           "type": "webview",
           "name": "%backimage.img-explorer%"
         }
@@ -53,9 +50,9 @@
     "menus": {
       "view/title": [
         {
-          "command": "backimage.refresh",
+          "command": "extension.backimage.refresh",
           "group": "navigation",
-          "when": "view == backimage.readerView"
+          "when": "view == extension.backimage.readerView"
         }
       ]
     },
