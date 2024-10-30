@@ -98,7 +98,9 @@
     "webpack-cli": "^5.1.4"
   },
   "dependencies": {
+    "@types/stylis": "^4.2.6",
     "backimage": "file:",
+    "stylis": "^4.3.4",
     "uglify-js": "^3.19.3"
   }
 }
