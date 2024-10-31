@@ -3,6 +3,8 @@ import { cssPath, jsPath } from './vscodePath';
 
 export const VERSION = pkg.version;
 
+export const PKG_NAME = pkg.name;
+
 export const ENCODING = "utf-8";
 
 export const BACKUP_JS_PATH = jsPath + ".backup";
