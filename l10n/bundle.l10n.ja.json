@@ -1,3 +1,8 @@
 {
-    "Retry with Admin/Sudo": "管理者として再実行する"
+    "Retry with Admin/Sudo": "管理者として再実行する",
+    "Current Status": "現在の状況",
+    "Enable": "有効",
+    "Disable": "無効",
+    "BackImage to enable": "有効化する",
+    "BackImage to disable": "無効化する"
 }

@@ -1,3 +1,8 @@
 {
-    "Retry with Admin/Sudo": "Retry with Admin/Sudo"
+    "Retry with Admin/Sudo": "Retry with Admin/Sudo",
+    "Current Status": "Current Status",
+    "Enable": "Enable",
+    "Disable": "Disable",
+    "BackImage to enable": "BackImage to enable",
+    "BackImage to disable": "BackImage to disable"
 }
