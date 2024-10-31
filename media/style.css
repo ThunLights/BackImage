@@ -1,0 +1,31 @@
+
+* {
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    width: 100%;
+}
+
+main {
+    overflow: hidden;
+    width: 90%;
+    margin: 3px auto;
+}
+
+.button {
+    color: var(--vscode-button-foreground);
+    background-color: var(--vscode-button-background);
+
+    margin-top: 3px;
+    padding: 7px 0;
+
+    width: 100%;
+    text-align: center;
+    display: block;
+    cursor: pointer;
+}
