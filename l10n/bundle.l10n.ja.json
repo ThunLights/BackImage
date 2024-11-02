@@ -7,7 +7,11 @@
     "BackImage to disable": "無効化する",
     "Apply settings": "設定を適応する",
     "Full Screen": "フルスクリーン",
+    "Side Bar": "サイドバー",
+    "Panel": "パネル",
+    "Editor": "エディター",
     "Select File": "ファイルを選択",
     "Image List": "画像リスト",
-    "There are no listings registered": "登録されているリストがありません"
+    "There are no listings registered": "登録されているリストがありません",
+    "Not Selected": "未選択"
 }
