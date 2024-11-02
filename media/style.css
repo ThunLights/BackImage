@@ -1,31 +1,60 @@
-
 * {
-    margin: 0;
-    padding: 0;
+  margin: 0;
+  padding: 0;
 }
 
 body {
-    margin: 0;
-    padding: 0;
-    overflow: hidden;
-    width: 100%;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  width: 100%;
 }
 
 main {
-    overflow: hidden;
-    width: 90%;
-    margin: 3px auto;
+  overflow: hidden;
+  width: 90%;
+  margin: 3px auto;
+}
+
+.contents-block {
+  margin-top: 10px;
 }
 
 .button {
-    color: var(--vscode-button-foreground);
-    background-color: var(--vscode-button-background);
+  color: var(--vscode-button-foreground);
+  background-color: var(--vscode-button-background);
 
-    margin-top: 3px;
-    padding: 7px 0;
+  margin-top: 3px;
+  padding: 7px 0;
 
-    width: 100%;
-    text-align: center;
-    display: block;
-    cursor: pointer;
+  width: 100%;
+  text-align: center;
+  display: block;
+  cursor: pointer;
+}
+
+.padding-small-button {
+  padding: 4px 0;
+  margin-bottom: 10px;
+}
+
+input[type="file"] {
+  display: none;
+}
+
+.contents-title {
+  font-size: 18px;
+}
+
+.inline {
+  display: inline-block;
+}
+
+.margin-top {
+  margin-top: 20px;
+}
+
+.info-buttons {
+  margin-left: 5px;
+  cursor: pointer;
 }
