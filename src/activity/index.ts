@@ -1,6 +1,6 @@
 import { commands, ExtensionContext, l10n, OpenDialogOptions, Uri, WebviewView, WebviewViewProvider, window } from "vscode";
 
-import { FolderController } from "../ImgList/index";
+import { BackgroundType, FolderController, fullscreenOther } from "../ImgList/index";
 import { utils } from "../utils";
 
 export class ReaderViewProvider implements WebviewViewProvider {
@@ -104,28 +104,28 @@ export class ReaderViewProvider implements WebviewViewProvider {
 					<div class="contents-block margin-top">
 						<p class="inline contents-small-title">${l10n.t("Full Screen")}</p>
 						<div class="contents-controls">
-							<button class="contents-switch">OFF</button>
+							<button class="contents-switch" id="full-screen-button">OFF</button>
 							<select class="contents-selector" id="full-screen">${this.options}</select>
 						</div>
 					</div>
 					<div class="contents-block margin-top">
 						<p class="inline contents-small-title">${l10n.t("Side Bar")}</p>
 						<div class="contents-controls">
-							<button class="contents-switch">OFF</button>
+							<button class="contents-switch" id="side-bar-button">OFF</button>
 							<select class="contents-selector" id="side-bar">${this.options}</select>
 						</div>
 					</div>
 					<div class="contents-block margin-top">
 						<p class="inline contents-small-title">${l10n.t("Editor")}</p>
 						<div class="contents-controls">
-							<button class="contents-switch">OFF</button>
+							<button class="contents-switch" id="editor-button">OFF</button>
 							<select class="contents-selector" id="editor">${this.options}</select>
 						</div>
 					</div>
 					<div class="contents-block margin-top">
 						<p class="inline contents-small-title">${l10n.t("Panel")}</p>
 						<div class="contents-controls">
-							<button class="contents-switch">OFF</button>
+							<button class="contents-switch" id="panel-button">OFF</button>
 							<select class="contents-selector" id="panel">${this.options}</select>
 						</div>
 					</div>
@@ -174,6 +174,23 @@ export class ReaderViewProvider implements WebviewViewProvider {
 			}
 			if (content.type === "log") {
 				console.log(content.text);
+			}
+			if (content.type === "settingsUpdate") {
+				let bgType: BackgroundType = null;
+				if (Array.isArray(content.content)) {
+					let bgTypes: fullscreenOther[] = [];
+					if (content.content.includes("panel")) { bgTypes.push("panel"); }
+					if (content.content.includes("side-bar")) { bgTypes.push("side-bar"); }
+					if (content.content.includes("editor")) { bgTypes.push("editor"); }
+					bgType = bgTypes;
+				} else if (content.content === "fullscreen") {
+					bgType = "fullscreen";
+				}
+				await this.folder.updateBackgroundType(bgType);
+				await webview.postMessage(JSON.stringify({
+					type: "settingsUpdate",
+					content: bgType,
+				}));
 			}
 			if (content.type === "getImg") {
 				const isGetFile = content.get === "files";

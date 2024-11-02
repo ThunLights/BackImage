@@ -4,9 +4,10 @@ import path from "path";
 
 import { commands, l10n, window } from "vscode";
 
-import { BACKUP_CSS_PATH, BACKUP_JS_PATH, ENCODING } from "../utils/constants";
+import { BACKUP_CSS_PATH, BACKUP_JS_PATH, ENCODING, PKG_NAME, VERSION } from "../utils/constants";
 import { basePath, cssPath, jsPath } from "../utils/vscodePath";
 import { utils } from "../utils";
+import { PatchGenerator } from "../PatchGenerator/index";
 
 export class FileBackuController {
     constructor() {}
@@ -54,6 +55,17 @@ export class FileBackuController {
                 await fs.promises.rm(tempFilePath);
             }
         }
+    }
+
+    public async update(patch: PatchGenerator): Promise<void> {
+        const base = this.getContent;
+        const content = [
+            base,
+            `//${PKG_NAME}.${VERSION}`,
+            ``,
+            `//END.${PKG_NAME}.${VERSION}`
+        ].join("\n");
+        await this.saveContentTo(jsPath, content);
     }
 
     public async setup(): Promise<void> {

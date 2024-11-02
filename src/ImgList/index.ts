@@ -1,6 +1,6 @@
 import { ExtensionContext } from "vscode";
 
-type fullscreenOther = "panel" | "side-bar" | "editor";
+export type fullscreenOther = "panel" | "side-bar" | "editor";
 
 export type BackgroundType = "fullscreen" | fullscreenOther[] | null;
 
@@ -26,22 +26,22 @@ export class FolderController {
         return this._context.globalState.get<Folder[]>(FolderController._globalStateKey) ?? [];
     }
 
-    public addImgList(folder: Folder) {
+    public async addImgList(folder: Folder) {
         const imgList = this.imageLists;
         imgList.push(folder);
-        this._context.globalState.update(FolderController._globalStateKey, imgList);
+        await this._context.globalState.update(FolderController._globalStateKey, imgList);
         return imgList;
     }
 
-    public removeImgList(folder: Folder) {
+    public async removeImgList(folder: Folder) {
         let imgList = this.imageLists;
         imgList = imgList.filter(value => value !== folder);
-        this._context.globalState.update(FolderController._globalStateKey, imgList);
+        await this._context.globalState.update(FolderController._globalStateKey, imgList);
         return imgList;
     }
 
-    public updateBackgroundType(content: BackgroundType) {
-        this._context.globalState.update(FolderController._backgroundStateKey, content);
+    public async updateBackgroundType(content: BackgroundType) {
+        await this._context.globalState.update(FolderController._backgroundStateKey, content);
         return this.backgroundType;
     }
 }
