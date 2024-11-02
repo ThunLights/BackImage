@@ -96,6 +96,7 @@
   },
   "dependencies": {
     "@types/stylis": "^4.2.6",
+    "@vscode/codicons": "^0.0.36",
     "backimage": "file:",
     "stylis": "^4.3.4",
     "uglify-js": "^3.19.3"
