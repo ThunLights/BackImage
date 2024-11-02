@@ -1,4 +1,4 @@
-import { commands, ExtensionContext, l10n, Uri, WebviewView, WebviewViewProvider, window } from "vscode";
+import { commands, ExtensionContext, l10n, OpenDialogOptions, Uri, WebviewView, WebviewViewProvider, window } from "vscode";
 
 import { FolderController } from "../ImgList/index";
 import { utils } from "../utils";
@@ -15,7 +15,7 @@ export class ReaderViewProvider implements WebviewViewProvider {
 		this.folder = new FolderController(_context);
     }
 
-	private get imageLists() {
+	private get imageLists(): string {
 		const imgList = this.folder.imageLists;
 		let content = /*html*/`<p>${utils.blockXSS(l10n.t("There are no listings registered"))}</p>`;
 
@@ -35,6 +35,19 @@ export class ReaderViewProvider implements WebviewViewProvider {
 		return content;
 	}
 
+	private get options(): string {
+		const folders = this.folder.imageLists;
+		let content = /*html*/`<option value="" selected>${utils.blockXSS(l10n.t("Not Selected"))}</option>`;
+		for (const folder of folders) {
+			content += `\n` + /*html*/`<option value="${folder.id}">${utils.blockXSS(folder.name)}</option>`;
+		}
+		return content;
+	}
+
+	private enableOrDisable(content: boolean) {
+		return content ? "enable" : "disable";
+	}
+
 	public resolveWebviewView(
 		webviewView: WebviewView,
 //		_context: WebviewViewResolveContext,
@@ -46,6 +59,7 @@ export class ReaderViewProvider implements WebviewViewProvider {
 		const scriptUri = webview.asWebviewUri(Uri.joinPath(this._extensionUri, "media", "script.js"));
 
 		const enable = this._context.globalState.get<boolean>("enable") || false;
+		const bgType = this.folder.backgroundType;
 
 		const status = enable ? l10n.t("Enable") : l10n.t("Disable");
 		const statusPanel = l10n.t("Current Status");
@@ -72,7 +86,11 @@ export class ReaderViewProvider implements WebviewViewProvider {
 			</head>
 			<body>
 				<div class="status-list">
-					<input type="hidden" id="status" value="${ enable ? "enable" : "disable" }" />
+					<input type="hidden" id="status" value="${ this.enableOrDisable(enable) }" />
+					<input type="hidden" id="switch-fullscreen" value="${this.enableOrDisable(bgType === "fullscreen")}">
+					<input type="hidden" id="switch-side-bar" value="${this.enableOrDisable(Boolean(bgType && bgType !== "fullscreen" && bgType.includes("side-bar")))}">
+					<input type="hidden" id="switch-editor" value="${this.enableOrDisable(Boolean(bgType && bgType !== "fullscreen" && bgType.includes("editor")))}">
+					<input type="hidden" id="switch-panel" value="${this.enableOrDisable(Boolean(bgType && bgType !== "fullscreen" && bgType.includes("panel")))}">
 				</div>
 				<main>
 					<div class="contents-block">
@@ -82,19 +100,42 @@ export class ReaderViewProvider implements WebviewViewProvider {
 						<p>${statusPanel}: <strong style="color: ${statusColor};" id="status-panel">${status}</strong></p>
 						<button id="status-changer" class="button">${statusChangerLabel}</button>
 					</div>
+
 					<div class="contents-block margin-top">
-						<p class="inline contents-title">${l10n.t("Full Screen")}</p>
-						<input id="switch-fullscreen" type="checkbox">
-						<div>
-							<label for="full-screen">${l10n.t("Select File")}</label>
-							<input id="full-screen" type="file">
+						<p class="inline contents-small-title">${l10n.t("Full Screen")}</p>
+						<div class="contents-controls">
+							<button class="contents-switch">OFF</button>
+							<select class="contents-selector" id="full-screen">${this.options}</select>
+						</div>
+					</div>
+					<div class="contents-block margin-top">
+						<p class="inline contents-small-title">${l10n.t("Side Bar")}</p>
+						<div class="contents-controls">
+							<button class="contents-switch">OFF</button>
+							<select class="contents-selector" id="side-bar">${this.options}</select>
+						</div>
+					</div>
+					<div class="contents-block margin-top">
+						<p class="inline contents-small-title">${l10n.t("Editor")}</p>
+						<div class="contents-controls">
+							<button class="contents-switch">OFF</button>
+							<select class="contents-selector" id="editor">${this.options}</select>
+						</div>
+					</div>
+					<div class="contents-block margin-top">
+						<p class="inline contents-small-title">${l10n.t("Panel")}</p>
+						<div class="contents-controls">
+							<button class="contents-switch">OFF</button>
+							<select class="contents-selector" id="panel">${this.options}</select>
 						</div>
 					</div>
 
-					<button id="test-button">test</button>
-
 					<div class="contents-block margin-top">
-						<p class="contents-title">${l10n.t("Image List")} <i class="info-buttons codicon codicon-plus"></i></p>
+						<p class="contents-title">
+							${l10n.t("Image List")}
+							<i id="file-plus" class="info-buttons codicon codicon-file-add"></i>
+							<i id="dir-plus" class="info-buttons codicon codicon-file-directory-create"></i>
+						</p>
 						<div class="img-list">${this.imageLists}</div>
 					</div>
 				</main>
@@ -134,15 +175,28 @@ export class ReaderViewProvider implements WebviewViewProvider {
 			if (content.type === "log") {
 				console.log(content.text);
 			}
-			if (content.type === "test") {
-				const fileUri = await window.showOpenDialog({
+			if (content.type === "getImg") {
+				const isGetFile = content.get === "files";
+				const options = {
 					canSelectMany: false,
-					canSelectFiles: true,
-				});
-				if (fileUri) {
-					const file = fileUri[0];
-					console.log(file.fsPath);
-				}
+					canSelectFiles: isGetFile,
+					canSelectFolders: !isGetFile,
+				} satisfies OpenDialogOptions;
+				const fileUri = await window.showOpenDialog(options) ?? [];
+				if (fileUri.length) {
+					const { fsPath } = fileUri[0];
+					await webview.postMessage(JSON.stringify({
+						type: "file",
+						id: content.id,
+						path: fsPath,
+					}));
+				} else {
+					await webview.postMessage(JSON.stringify({
+						type: "folder",
+						id: content.id,
+						path: null,
+					}));
+				};
 			}
 		});
 	}

@@ -42,6 +42,16 @@ input[type="file"] {
   display: none;
 }
 
+input[type="checkbox"] {
+  color: var(--vscode-checkbox-foreground);
+  background-color: var(--vscode-checkbox-background);
+  border: var(--vscode-checkbox-border);
+}
+
+input[type="checkbox"]:checked {
+  background-color: var(--vscode-checkbox-selectBorder);
+}
+
 .contents-title {
   font-size: 18px;
 }
@@ -57,4 +67,34 @@ input[type="file"] {
 .info-buttons {
   margin-left: 5px;
   cursor: pointer;
+}
+
+.contents-small-title {
+  font-size: 14px;
+}
+
+.contents-controls {
+  width: 100%;
+  align-items: center;
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 5px;
+}
+
+.contents-controls button {
+  color: var(--vscode-button-foreground);
+  background-color: var(--vscode-button-background);
+  padding: 3px 7px;
+}
+
+.contents-controls select {
+  color: var(--vscode-dropdown-foreground);
+  background-color: var(--vscode-dropdown-background);
+  padding: 3px 7px;
+  width: 100%;
+}
+
+.contents-controls option {
+  color: var(--vscode-dropdown-foreground);
+  background-color: var(--vscode-dropdown-listBackground);
 }

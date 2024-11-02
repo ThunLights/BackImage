@@ -1,6 +1,9 @@
 
 const fileUploaders = {
 	"full-screen": null,
+	"side-bar": null,
+	"editor": null,
+	"panel": null,
 };
 const vscode = acquireVsCodeApi();
 
@@ -8,39 +11,40 @@ const statusChanger = document.getElementById("status-changer");
 const applySettingsButton = document.getElementById("apply-settings-button");
 const statusPanel = document.getElementById("status-panel");
 const infoStatus = document.getElementById("status");
-
-for (const elementId of Object.keys(fileUploaders)) {
-	const fileUploader = document.getElementById(elementId);
-	fileUploader.onchange = async (e) => {
-//		fileUploaders[elementId] = e.target;
-		vscode.postMessage(JSON.stringify({
-			type: "log",
-			text: fileUploader.value,
-		}));
-	};
-}
-
-document.getElementById("test-button").onclick = async () => {
-	vscode.postMessage(JSON.stringify({
-		type: "test"
-	}));
-};
+const filePlusButton = document.getElementById("file-plus");
+const dirPlusButton = document.getElementById("dir-plus");
 
 statusChanger.onclick = async () => {
 	if (infoStatus.value === "enable") {
-		vscode.postMessage(JSON.stringify({
+		await vscode.postMessage(JSON.stringify({
 			type: "disable"
 		}));
 	}
 	if (infoStatus.value === "disable") {
-		vscode.postMessage(JSON.stringify({
+		await vscode.postMessage(JSON.stringify({
 			type: "enable"
 		}));
 	}
 };
 
+filePlusButton.onclick = async () => {
+	await vscode.postMessage(JSON.stringify({
+		type: "getImg",
+		get: "files",
+		id: "imgListAddFile"
+	}));
+};
+
+dirPlusButton.onclick = async () => {
+	await vscode.postMessage(JSON.stringify({
+		type: "getImg",
+		get: "directories",
+		id: "imgListAddDir"
+	}));
+};
+
 applySettingsButton.onclick = async () => {
-	vscode.postMessage(JSON.stringify({
+	await vscode.postMessage(JSON.stringify({
 		type: "update"
 	}));
 };
