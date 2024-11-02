@@ -4,5 +4,10 @@
     "Enable": "Enable",
     "Disable": "Disable",
     "BackImage to enable": "BackImage to enable",
-    "BackImage to disable": "BackImage to disable"
+    "BackImage to disable": "BackImage to disable",
+    "Apply settings": "Apply settings",
+    "Full Screen": "Full Screen",
+    "Select File": "Select File",
+    "Image List": "Image List",
+    "There are no listings registered": "There are no listings registered"
 }

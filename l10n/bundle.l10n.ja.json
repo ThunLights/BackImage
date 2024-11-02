@@ -4,5 +4,10 @@
     "Enable": "有効",
     "Disable": "無効",
     "BackImage to enable": "有効化する",
-    "BackImage to disable": "無効化する"
+    "BackImage to disable": "無効化する",
+    "Apply settings": "設定を適応する",
+    "Full Screen": "フルスクリーン",
+    "Select File": "ファイルを選択",
+    "Image List": "画像リスト",
+    "There are no listings registered": "登録されているリストがありません"
 }
