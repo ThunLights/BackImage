@@ -14,6 +14,14 @@ export namespace utils {
     export function escape(content: string): string {
         return content.replaceAll(`"`, `\"`);
     }
+    export function blockXSS(content: string): string {
+        return content
+        .replaceAll(`<`, "&lt;")
+        .replaceAll(`>`, "&gt;")
+        .replaceAll(`&`, "&amp;")
+        .replaceAll(`"`, "&quot;")
+        .replaceAll(`'`, "&apos;");
+    }
     export function withIIFE(source: string) {
         return `;(function() { ${source} })();`;
     }
