@@ -4,7 +4,9 @@ import path from "path";
 import { ExtensionContext } from "vscode";
 
 export type Folder = {
+    id: string
     name: string
+    description: string
     path: string
 }
 
@@ -15,7 +17,7 @@ export class FolderController {
     }
 
     public get imageLists() {
-        return this._context.globalState.get<Folder[]>(FolderController._globalStateKey) || [];
+        return this._context.globalState.get<Folder[]>(FolderController._globalStateKey) ?? [];
     }
     public addImgList(folder: Folder) {
         const imgList = this.imageLists;
