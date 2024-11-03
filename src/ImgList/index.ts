@@ -4,11 +4,14 @@ export type fullscreenOther = "panel" | "side-bar" | "editor";
 
 export type BackgroundType = "fullscreen" | fullscreenOther[] | null;
 
+export type FolderType = "file" | "folder";
+
 export type Folder = {
     id: string
+    path: string
+    type: FolderType
     name: string
     description: string
-    path: string
 };
 
 export class FolderController {
@@ -29,6 +32,13 @@ export class FolderController {
     public async addImgList(folder: Folder) {
         const imgList = this.imageLists;
         imgList.push(folder);
+        await this._context.globalState.update(FolderController._globalStateKey, imgList);
+        return imgList;
+    }
+
+    public async updateImgList(folder: Folder) {
+        let imgList = this.imageLists;
+        imgList = imgList.map(value => value.id === folder.id ? folder : value);
         await this._context.globalState.update(FolderController._globalStateKey, imgList);
         return imgList;
     }
