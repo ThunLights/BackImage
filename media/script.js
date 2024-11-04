@@ -20,6 +20,12 @@ const select2button = {
 	"editor": "editor-button",
 	"panel": "panel-button",
 };
+const button2select = {
+	"full-screen-button": "full-screen",
+	"side-bar-button": "side-bar",
+	"editor-button": "editor",
+	"panel-button": "panel",
+};
 const button2Status = {
 	"full-screen-button": infoFullScreen,
 	"side-bar-button": infoSideBar,
@@ -33,6 +39,17 @@ vscode.postMessage(JSON.stringify({
 }));
 
 for (const [button, status] of Object.entries(button2Status)) {
+	const selectorId = button2select[button];
+	const systemId = selectIdChanger(selectorId);
+	const selectElement = document.getElementById(selectorId);
+	selectElement.onchange = async () => {
+		const value = selectElement.value === "" ? null : selectElement.value;
+		await vscode.postMessage(JSON.stringify({
+			type: "updateSelect",
+			id: systemId,
+			content: value,
+		}));
+	};
 	document.getElementById(button).onclick = async () => {
 		status.value = status.value === "enable" ? "disable" : "enable";
 		await buttonClicked();
@@ -107,11 +124,13 @@ window.addEventListener("message", async (msg) => {
 	}
 	if (json.type === "start") {
 		scriptUpdate(json.ids);
+		await updateSelectors(json.ids, json.selects);
 	}
 	if (json.type === "updateImgList") {
 		imgLists.innerHTML = json.imgs;
 		selectorUpdate(json.options);
 		scriptUpdate(json.ids);
+		await updateSelectors(json.ids, json.selects);
 	}
 	if (json.type === "settingsUpdate") {
 		if (Array.isArray(json.content)) {
@@ -154,8 +173,6 @@ function buttonsUpdate() {
 }
 
 function scriptUpdate(ids) {
-	/**@type {HTMLCollectionOf<HTMLElement>} */
-	const extraInputs = document.getElementsByClassName("extra-input");
 	for (const id of ids) {
 		const name = document.getElementById(`name_${id}`).textContent;
 		const description = document.getElementById(`description_${id}`).textContent;
@@ -240,19 +257,46 @@ function scriptUpdate(ids) {
 			}));
 		};
 	}
-	for (const extraInput of extraInputs) {
-		extraInput.onkeyup = async (e) => {
-			if (e.key === "Enter") {
-				e.preventDefault();
-			}
-		};
-	}
 }
 
 function selectorUpdate(options) {
 	const selectors = document.getElementsByClassName("contents-selector");
 	for (const selector of selectors) {
 		selector.innerHTML = options;
+	}
+}
+
+function selectIdChanger(content) {
+	return content === "full-screen"
+		? "fullscreen"
+		: content === "side-bar"
+			? "sideBar"
+			: content;
+}
+
+function systemIdChanger(content) {
+	return content === "fullscreen"
+		? "full-screen"
+		: content === "sideBar"
+			? "side-bar"
+			: content;
+}
+
+async function updateSelectors(ids, selects) {
+	for (const [key, value] of Object.entries(selects)) {
+		if (value) {
+			const element = document.getElementById(systemIdChanger(key));
+			if (ids.includes(value)) {
+				element.value = value;
+			} else {
+				element.value = "";
+				await vscode.postMessage(JSON.stringify({
+					type: "updateSelect",
+					id: key,
+					content: null,
+				}));
+			}
+		}
 	}
 }
 

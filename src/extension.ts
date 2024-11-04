@@ -6,6 +6,7 @@ import {
 
 import { ReaderViewProvider } from "./activity/index";
 import { FileBackuController } from "./BackupFile/index";
+import { FolderController } from "./ImgList";
 
 export async function activate(context: ExtensionContext) {
 	const backup = new FileBackuController();

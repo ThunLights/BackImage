@@ -1,6 +1,12 @@
 import { ExtensionContext } from "vscode";
+import z from "zod";
+import { BackgroundImgZod, structChecker } from "../utils/struct";
+
+export type StringOrNull = string | null;
 
 export type fullscreenOther = "panel" | "side-bar" | "editor";
+
+export type AllBackgroundTypes = "fullscreen" | "panel" | "sideBar" | "editor";
 
 export type BackgroundType = "fullscreen" | fullscreenOther[] | null;
 
@@ -14,19 +20,33 @@ export type Folder = {
     description: string
 };
 
+export type BackgroundImg = z.infer<typeof BackgroundImgZod>;
+
 export class FolderController {
     public static readonly _globalStateKey = "imageLists";
     public static readonly _backgroundStateKey = "backgroundType";
+    public static readonly _backgroundImgKey = "backgroundImg";
+    public static readonly _backgroundImgInitData = {
+        fullscreen: null,
+        panel: null,
+        sideBar: null,
+        editor: null,
+    };
 
     constructor(private _context: ExtensionContext) {
     }
 
-    public get backgroundType() {
+    public get backgroundType(): BackgroundType {
         return this._context.globalState.get<BackgroundType>(FolderController._backgroundStateKey) ?? null;
     }
 
-    public get imageLists() {
+    public get imageLists(): Folder[] {
         return this._context.globalState.get<Folder[]>(FolderController._globalStateKey) ?? [];
+    }
+
+    public get backgroundImg(): BackgroundImg {
+        const content = this._context.globalState.get<BackgroundImg>(FolderController._backgroundImgKey);
+        return structChecker(content, BackgroundImgZod) ?? FolderController._backgroundImgInitData;
     }
 
     public async addImgList(folder: Folder) {
@@ -59,5 +79,12 @@ export class FolderController {
     public async updateBackgroundType(content: BackgroundType) {
         await this._context.globalState.update(FolderController._backgroundStateKey, content);
         return this.backgroundType;
+    }
+
+    public async updateBackgroundImg(id: AllBackgroundTypes, content: StringOrNull) {
+        const bgImg = this.backgroundImg;
+        bgImg[id] = content;
+        await this._context.globalState.update(FolderController._backgroundImgKey, bgImg);
+        return this.backgroundImg;
     }
 }

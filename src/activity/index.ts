@@ -251,7 +251,11 @@ export class ReaderViewProvider implements WebviewViewProvider {
 				await webview.postMessage(JSON.stringify({
 					type: "start",
 					ids: this.folder.imageLists.map(value => value.id),
+					selects: this.folder.backgroundImg,
 				}));
+			}
+			if (content.type === "updateSelect") {
+				await this.folder.updateBackgroundImg(content.id, content.content);
 			}
 			if (content.type === "imgList") {
 				if (content.action === "add") {
@@ -274,6 +278,7 @@ export class ReaderViewProvider implements WebviewViewProvider {
 					options: this.options,
 					imgs: this.imageLists,
 					ids: this.folder.imageLists.map(value => value.id),
+					selects: this.folder.backgroundImg,
 				}));
 			}
 			if (content.type === "settingsUpdate") {
