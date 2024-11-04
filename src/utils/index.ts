@@ -16,11 +16,11 @@ export namespace utils {
     }
     export function blockXSS(content: string): string {
         return content
-        .replaceAll(`<`, "&lt;")
-        .replaceAll(`>`, "&gt;")
-        .replaceAll(`&`, "&amp;")
-        .replaceAll(`"`, "&quot;")
-        .replaceAll(`'`, "&apos;");
+            .replaceAll(`&`, "&amp;")
+            .replaceAll(`"`, "&quot;")
+            .replaceAll(`'`, "&apos;")
+            .replaceAll(`<`, "&lt;")
+            .replaceAll(`>`, "&gt;");
     }
     export function withIIFE(source: string) {
         return `;(function() { ${source} })();`;
