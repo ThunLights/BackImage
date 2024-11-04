@@ -111,17 +111,31 @@ input[type="checkbox"]:checked {
   font-size: 8px;
 }
 
-.list {
-  margin: 5px auto;
+.updete-component {
+  margin: 16px 0;
 }
 
-.list input[type="text"] {
+.updete-component input,
+.updete-component textarea {
   color: var(--vscode-sideBar-foreground);
   background-color: var(--vscode-sideBar-background);
-  border: none;
-  border-style: none;
+  margin-bottom: 3px;
+  border-bottom: solid 1px gray;
   overflow: auto;
+}
+
+.updete-component input {
   width: 100%;
+}
+
+.updete-component textarea {
+  resize: none;
+  width: 98%;
+  height: 120px;
+}
+
+.list {
+  margin: 5px auto;
 }
 
 .list i {
@@ -160,4 +174,8 @@ input[type="checkbox"]:checked {
   align-content: center;
   grid-template-columns: 45% 45%;
   gap: 5px;
+}
+
+.break-all {
+  word-break: break-all;
 }

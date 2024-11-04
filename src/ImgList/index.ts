@@ -36,14 +36,14 @@ export class FolderController {
         return imgList;
     }
 
-    public async updateImgList(id: string, name: string, description: string) {
+    public async updateImgList(id: string, name?: string, description?: string, path?: string) {
         let imgList = this.imageLists;
         imgList = imgList.map(value => value.id === id ? {
-            id,
+            id: value.id,
             type: value.type,
-            path: value.path,
-            name,
-            description,
+            path: path ?? value.path,
+            name: name ?? value.name,
+            description: description ?? value.description,
         } : value);
         await this._context.globalState.update(FolderController._globalStateKey, imgList);
         return imgList;

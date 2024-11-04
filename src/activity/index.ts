@@ -24,12 +24,17 @@ export class ReaderViewProvider implements WebviewViewProvider {
 			for (const img of imgList) {
 				const id = utils.blockXSS(img.id);
 				const name = utils.blockXSS(img.name);
+				const description = utils.blockXSS(img.description);
+				const elementType = img.type === "file" ? "files" : "directories";
 				elements.push(/*html*/`
 					<div class="list">
+						<div class="list-infos">
+							<input type="hidden" id="element_type_${id}" value="${elementType}">
+						</div>
 						<div class="list-upper">
 							<div>
 								<i class="info-buttons codicon codicon-file${img.type === "file" ? "" : "-directory"}"></i>
-								<p id="name_${id}" class="inline extra-input">${name}</p>
+								<p id="name_${id}" class="inline">${name}</p>
 								<i id="edit_name_${id}" class="info-buttons codicon codicon-edit" style="display: none;"></i>
 							</div>
 							<div>
@@ -39,17 +44,42 @@ export class ReaderViewProvider implements WebviewViewProvider {
 						</div>
 						<div class="list-lower">
 							<div>
-								<p id="path_${id}" class="inline extra-input">${utils.blockXSS(img.path)}</p>
+								<p id="path_${id}" class="inline break-all">${utils.blockXSS(img.path)}</p>
 								<i id="edit_path_${id}" class="info-buttons codicon codicon-edit" style="display: none;"></i>
 							</div>
 							<div id="more_info_${id}" class="more-info" style="display: none">
-								<p class="inline">${l10n.t("Description")}: ${utils.blockXSS(img.description)}</p>
-								<i id="edit_description_${id}" class="info-buttons codicon codicon-edit" style="display: none;"></i>
-								<p class="caution">${l10n.t("ID")}: ${id}</p>
+								<p class="inline">${l10n.t("Description")}</p>
+								<i id="edit_description_${id}" class="inline info-buttons codicon codicon-edit" style="display: none;"></i>
+								<p>${this.descriptionParser(description)}</p>
+								<p class="caution break-all">${l10n.t("ID")}: ${id}</p>
 							</div>
 							<div id="delete_final_confirmation_${id}" class="delete_final_confirmation" style="display: none;">
 								<button id="delete_cancel_${id}">${l10n.t("Cancel")}</button>
 								<button id="delete_select_${id}">${l10n.t("Delete")}</button>
+							</div>
+							<div id="name-update-${id}" class="updete-component" style="display: none;">
+								<div>
+									<p>${l10n.t("Rename")}: (${l10n.t("Now")} <strong id="name_${id}">${name}</strong>)</p>
+								</div>
+								<div>
+									<input type="text" id="update-name-content-${id}" value="${name}"/>
+								</div>
+								<div class="delete_final_confirmation">
+									<button id="update_name_cancel_${id}">${l10n.t("Cancel")}</button>
+									<button id="update_name_select_${id}">${l10n.t("Change")}</button>
+								</div>
+							</div>
+							<div id="description-update-${id}" class="updete-component" style="display: none;">
+								<div>
+									<p>${l10n.t("Change description")}: (${l10n.t("Now")} <strong id="description_${id}">${description}</strong>)</p>
+								</div>
+								<div>
+									<textarea id="update-description-content-${id}" value="${description}"></textarea>
+								</div>
+								<div class="delete_final_confirmation">
+									<button id="update_description_cancel_${id}">${l10n.t("Cancel")}</button>
+									<button id="update_description_select_${id}">${l10n.t("Change")}</button>
+								</div>
 							</div>
 						</div>
 					</div>
@@ -68,6 +98,15 @@ export class ReaderViewProvider implements WebviewViewProvider {
 			content += `\n` + /*html*/`<option value="${folder.id}">${utils.blockXSS(folder.name)}</option>`;
 		}
 		return content;
+	}
+
+	private descriptionParser(content: string): string {
+		const result: string[] = [];
+		const descriptions = content.split("\n");
+		for (const description of descriptions) {
+			result.push(/*html*/`<p>${utils.blockXSS(description)}</p>`);
+		}
+		return result.join("\n");
 	}
 
 	private enableOrDisable(content: boolean) {
@@ -225,7 +264,7 @@ export class ReaderViewProvider implements WebviewViewProvider {
 					});
 				}
 				if (content.action === "update") {
-					await this.folder.updateImgList(content.id, content.name, content.description);
+					await this.folder.updateImgList(content.id, content.name, content.description, content.path);
 				}
 				if (content.action === "remove") {
 					await this.folder.removeImgList(content.id);

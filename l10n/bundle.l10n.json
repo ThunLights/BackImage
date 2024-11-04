@@ -18,6 +18,10 @@
     "ID": "ID",
     "Path": "Path",
     "Description": "Description",
+    "Change": "Change",
     "Delete": "Delete",
-    "Cancel": "Cancel"
+    "Cancel": "Cancel",
+    "Now": "Now",
+    "Rename": "Rename",
+    "Change description": "Change description"
 }

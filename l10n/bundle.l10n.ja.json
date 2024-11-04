@@ -17,7 +17,11 @@
     "*Full screen mode must be turned off to turn on other modes": "※フルスクリーンモードをオフにしないと他モードをオンにできません",
     "ID": "ID",
     "Path": "パス",
+    "Change": "変更",
     "Description": "説明",
     "Delete": "削除",
-    "Cancel": "キャンセル"
+    "Cancel": "キャンセル",
+    "Now": "現在",
+    "Rename": "名前を変更",
+    "Change description": "説明を変更"
 }

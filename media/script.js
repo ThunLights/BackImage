@@ -26,6 +26,7 @@ const button2Status = {
 	"editor-button": infoEditor,
 	"panel-button": infoPanel,
 };
+const imgListInfos = {};
 
 vscode.postMessage(JSON.stringify({
 	type: "start"
@@ -92,6 +93,17 @@ window.addEventListener("message", async (msg) => {
 				path: json.path,
 			}));
 		}
+		if (json.id.startsWith("imgListEdit") && json.path) {
+			const id = json.id.replaceAll("imgListEdit", "");
+			await vscode.postMessage(JSON.stringify({
+				type: "imgList",
+				action: "update",
+				id,
+				name: undefined,
+				description: undefined,
+				path: json.path,
+			}));
+		}
 	}
 	if (json.type === "start") {
 		scriptUpdate(json.ids);
@@ -145,13 +157,62 @@ function scriptUpdate(ids) {
 	/**@type {HTMLCollectionOf<HTMLElement>} */
 	const extraInputs = document.getElementsByClassName("extra-input");
 	for (const id of ids) {
+		const name = document.getElementById(`name_${id}`).textContent;
+		const description = document.getElementById(`description_${id}`).textContent;
+		const newName = document.getElementById(`update-name-content-${id}`);
+		const newDescription = document.getElementById(`update-description-content-${id}`);
+
+		const nameUpdate = document.getElementById(`name-update-${id}`);
+		const descriptionUpdate = document.getElementById(`description-update-${id}`);
 		const moreInfoElement = document.getElementById(`more_info_${id}`);
 		const deleteSelectorElement = document.getElementById(`delete_final_confirmation_${id}`);
 
 		const editName = document.getElementById(`edit_name_${id}`);
 		const editPath = document.getElementById(`edit_path_${id}`);
 		const editDescription = document.getElementById(`edit_description_${id}`);
+		const elementType = document.getElementById(`element_type_${id}`).value;
 
+		editPath.onclick = async () => {
+			await vscode.postMessage(JSON.stringify({
+				type: "getImg",
+				get: elementType,
+				id: `imgListEdit${id}`,
+			}));
+		};
+		document.getElementById(`edit_name_${id}`).onclick = async () => {
+			nameUpdate.style.display = "block";
+		};
+		document.getElementById(`edit_description_${id}`).onclick = async () => {
+			descriptionUpdate.style.display = "block";
+		};
+		document.getElementById(`update_name_select_${id}`).onclick = async () => {
+			await vscode.postMessage(JSON.stringify({
+				type: "imgList",
+				action: "update",
+				id,
+				name: newName.value,
+				description: undefined,
+				path: undefined,
+			}));
+		};
+		document.getElementById(`update_description_select_${id}`).onclick = async () => {
+			await vscode.postMessage(JSON.stringify({
+				type: "imgList",
+				action: "update",
+				id,
+				name: undefined,
+				description: newDescription.value,
+				path: undefined,
+			}));
+		};
+		document.getElementById(`update_name_cancel_${id}`).onclick = async () => {
+			nameUpdate.style.display = "none";
+			newName.value = name;
+		};
+		document.getElementById(`update_description_cancel_${id}`).onclick = async () => {
+			descriptionUpdate.style.display = "none";
+			newDescription.value = description;
+		};
 		document.getElementById(`info_${id}`).onclick = async () => {
 			if (moreInfoElement.style.display === "block") {
 				moreInfoElement.style.display = "none";
