@@ -13,5 +13,11 @@
     "Select File": "Select File",
     "Image List": "Image List",
     "There are no listings registered": "There are no listings registered",
-    "Not Selected": "Not Selected"
+    "Not Selected": "Not Selected",
+    "*Full screen mode must be turned off to turn on other modes": "*Full screen mode must be turned off to turn on other modes",
+    "ID": "ID",
+    "Path": "Path",
+    "Description": "Description",
+    "Delete": "Delete",
+    "Cancel": "Cancel"
 }

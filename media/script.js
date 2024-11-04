@@ -6,6 +6,7 @@ const applySettingsButton = document.getElementById("apply-settings-button");
 const statusPanel = document.getElementById("status-panel");
 const filePlusButton = document.getElementById("file-plus");
 const dirPlusButton = document.getElementById("dir-plus");
+const imgLists = document.getElementById("img-lists");
 
 const infoStatus = document.getElementById("status");
 const infoFullScreen = document.getElementById("switch-fullscreen");
@@ -25,6 +26,10 @@ const button2Status = {
 	"editor-button": infoEditor,
 	"panel-button": infoPanel,
 };
+
+vscode.postMessage(JSON.stringify({
+	type: "start"
+}));
 
 for (const [button, status] of Object.entries(button2Status)) {
 	document.getElementById(button).onclick = async () => {
@@ -78,6 +83,24 @@ window.addEventListener("message", async (msg) => {
 		statusChanger.textContent = json.contents.button;
 		infoStatus.value = stats;
 	}
+	if (json.type === "getImg") {
+		if (json.id.startsWith("imgListAdd") && json.path) {
+			await vscode.postMessage(JSON.stringify({
+				type: "imgList",
+				action: "add",
+				fType: json.get,
+				path: json.path,
+			}));
+		}
+	}
+	if (json.type === "start") {
+		scriptUpdate(json.ids);
+	}
+	if (json.type === "updateImgList") {
+		imgLists.innerHTML = json.imgs;
+		selectorUpdate(json.options);
+		scriptUpdate(json.ids);
+	}
 	if (json.type === "settingsUpdate") {
 		if (Array.isArray(json.content)) {
 			if (json.content.includes("panel")) {
@@ -115,6 +138,60 @@ function buttonsUpdate() {
 		} else {
 			document.getElementById(button).textContent = "OFF";
 		}
+	}
+}
+
+function scriptUpdate(ids) {
+	/**@type {HTMLCollectionOf<HTMLElement>} */
+	const extraInputs = document.getElementsByClassName("extra-input");
+	for (const id of ids) {
+		const moreInfoElement = document.getElementById(`more_info_${id}`);
+		const deleteSelectorElement = document.getElementById(`delete_final_confirmation_${id}`);
+
+		const editName = document.getElementById(`edit_name_${id}`);
+		const editPath = document.getElementById(`edit_path_${id}`);
+		const editDescription = document.getElementById(`edit_description_${id}`);
+
+		document.getElementById(`info_${id}`).onclick = async () => {
+			if (moreInfoElement.style.display === "block") {
+				moreInfoElement.style.display = "none";
+				editName.style.display = "none";
+				editPath.style.display = "none";
+				editDescription.style.display = "none";
+			} else {
+				moreInfoElement.style.display = "block";
+				editName.style.display = "";
+				editPath.style.display = "";
+				editDescription.style.display = "";
+			}
+		};
+		document.getElementById(`delete_${id}`).onclick = async () => {
+			deleteSelectorElement.style.display = "grid";
+		};
+		document.getElementById(`delete_cancel_${id}`).onclick = async () => {
+			deleteSelectorElement.style.display = "none";
+		};
+		document.getElementById(`delete_select_${id}`).onclick = async () => {
+			await vscode.postMessage(JSON.stringify({
+				type: "imgList",
+				action: "remove",
+				id: id,
+			}));
+		};
+	}
+	for (const extraInput of extraInputs) {
+		extraInput.onkeyup = async (e) => {
+			if (e.key === "Enter") {
+				e.preventDefault();
+			}
+		};
+	}
+}
+
+function selectorUpdate(options) {
+	const selectors = document.getElementsByClassName("contents-selector");
+	for (const selector of selectors) {
+		selector.innerHTML = options;
 	}
 }
 

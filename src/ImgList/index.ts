@@ -36,16 +36,22 @@ export class FolderController {
         return imgList;
     }
 
-    public async updateImgList(folder: Folder) {
+    public async updateImgList(id: string, name: string, description: string) {
         let imgList = this.imageLists;
-        imgList = imgList.map(value => value.id === folder.id ? folder : value);
+        imgList = imgList.map(value => value.id === id ? {
+            id,
+            type: value.type,
+            path: value.path,
+            name,
+            description,
+        } : value);
         await this._context.globalState.update(FolderController._globalStateKey, imgList);
         return imgList;
     }
 
-    public async removeImgList(folder: Folder) {
+    public async removeImgList(id: string) {
         let imgList = this.imageLists;
-        imgList = imgList.filter(value => value !== folder);
+        imgList = imgList.filter(value => value.id !== id);
         await this._context.globalState.update(FolderController._globalStateKey, imgList);
         return imgList;
     }

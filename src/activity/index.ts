@@ -22,10 +22,36 @@ export class ReaderViewProvider implements WebviewViewProvider {
 		if (imgList.length) {
 			const elements: string[] = [];
 			for (const img of imgList) {
+				const id = utils.blockXSS(img.id);
+				const name = utils.blockXSS(img.name);
 				elements.push(/*html*/`
 					<div class="list">
-						<p>${utils.blockXSS(img.name)}</p>
-						<small>${utils.blockXSS(img.path)}</small>
+						<div class="list-upper">
+							<div>
+								<i class="info-buttons codicon codicon-file${img.type === "file" ? "" : "-directory"}"></i>
+								<p id="name_${id}" class="inline extra-input">${name}</p>
+								<i id="edit_name_${id}" class="info-buttons codicon codicon-edit" style="display: none;"></i>
+							</div>
+							<div>
+								<i id="info_${id}" class="info-buttons codicon codicon-list-unordered"></i>
+								<i id="delete_${id}" class="info-buttons codicon codicon-trash"></i>
+							</div>
+						</div>
+						<div class="list-lower">
+							<div>
+								<p id="path_${id}" class="inline extra-input">${utils.blockXSS(img.path)}</p>
+								<i id="edit_path_${id}" class="info-buttons codicon codicon-edit" style="display: none;"></i>
+							</div>
+							<div id="more_info_${id}" class="more-info" style="display: none">
+								<p class="inline">${l10n.t("Description")}: ${utils.blockXSS(img.description)}</p>
+								<i id="edit_description_${id}" class="info-buttons codicon codicon-edit" style="display: none;"></i>
+								<p class="caution">${l10n.t("ID")}: ${id}</p>
+							</div>
+							<div id="delete_final_confirmation_${id}" class="delete_final_confirmation" style="display: none;">
+								<button id="delete_cancel_${id}">${l10n.t("Cancel")}</button>
+								<button id="delete_select_${id}">${l10n.t("Delete")}</button>
+							</div>
+						</div>
 					</div>
 				`);
 			}
@@ -46,6 +72,10 @@ export class ReaderViewProvider implements WebviewViewProvider {
 
 	private enableOrDisable(content: boolean) {
 		return content ? "enable" : "disable";
+	}
+
+	private onOrOff(content: boolean) {
+		return content ? "ON" : "OFF";
 	}
 
 	public resolveWebviewView(
@@ -104,39 +134,42 @@ export class ReaderViewProvider implements WebviewViewProvider {
 					<div class="contents-block margin-top">
 						<p class="inline contents-small-title">${l10n.t("Full Screen")}</p>
 						<div class="contents-controls">
-							<button class="contents-switch" id="full-screen-button">OFF</button>
+							<button class="contents-switch" id="full-screen-button">${this.onOrOff(bgType === "fullscreen")}</button>
 							<select class="contents-selector" id="full-screen">${this.options}</select>
 						</div>
 					</div>
 					<div class="contents-block margin-top">
 						<p class="inline contents-small-title">${l10n.t("Side Bar")}</p>
 						<div class="contents-controls">
-							<button class="contents-switch" id="side-bar-button">OFF</button>
+							<button class="contents-switch" id="side-bar-button">${this.onOrOff(Boolean(bgType && bgType !== "fullscreen" && bgType.includes("side-bar")))}</button>
 							<select class="contents-selector" id="side-bar">${this.options}</select>
 						</div>
 					</div>
 					<div class="contents-block margin-top">
 						<p class="inline contents-small-title">${l10n.t("Editor")}</p>
 						<div class="contents-controls">
-							<button class="contents-switch" id="editor-button">OFF</button>
+							<button class="contents-switch" id="editor-button">${this.onOrOff(Boolean(bgType && bgType !== "fullscreen" && bgType.includes("editor")))}</button>
 							<select class="contents-selector" id="editor">${this.options}</select>
 						</div>
 					</div>
 					<div class="contents-block margin-top">
 						<p class="inline contents-small-title">${l10n.t("Panel")}</p>
 						<div class="contents-controls">
-							<button class="contents-switch" id="panel-button">OFF</button>
+							<button class="contents-switch" id="panel-button">${this.onOrOff(Boolean(bgType && bgType !== "fullscreen" && bgType.includes("panel")))}</button>
 							<select class="contents-selector" id="panel">${this.options}</select>
 						</div>
 					</div>
+					<div class="contents-block">
+						<small class="caution">${l10n.t("*Full screen mode must be turned off to turn on other modes")}</small>
+					<div>
 
 					<div class="contents-block margin-top">
-						<p class="contents-title">
-							${l10n.t("Image List")}
+						<div class="unified-font-size-18">
+							<p class="contents-title inline">${l10n.t("Image List")}</p>
 							<i id="file-plus" class="info-buttons codicon codicon-file-add"></i>
 							<i id="dir-plus" class="info-buttons codicon codicon-file-directory-create"></i>
-						</p>
-						<div class="img-list">${this.imageLists}</div>
+						</div>
+						<div id="img-lists" class="img-list">${this.imageLists}</div>
 					</div>
 				</main>
 				<script src="${scriptUri}"></script>
@@ -175,6 +208,35 @@ export class ReaderViewProvider implements WebviewViewProvider {
 			if (content.type === "log") {
 				console.log(content.text);
 			}
+			if (content.type === "start") {
+				await webview.postMessage(JSON.stringify({
+					type: "start",
+					ids: this.folder.imageLists.map(value => value.id),
+				}));
+			}
+			if (content.type === "imgList") {
+				if (content.action === "add") {
+					await this.folder.addImgList({
+						id: Date.now().toString(),
+						name: Date.now().toString(),
+						type: content.fType,
+						path: content.path,
+						description: "",
+					});
+				}
+				if (content.action === "update") {
+					await this.folder.updateImgList(content.id, content.name, content.description);
+				}
+				if (content.action === "remove") {
+					await this.folder.removeImgList(content.id);
+				}
+				await webview.postMessage(JSON.stringify({
+					type: "updateImgList",
+					options: this.options,
+					imgs: this.imageLists,
+					ids: this.folder.imageLists.map(value => value.id),
+				}));
+			}
 			if (content.type === "settingsUpdate") {
 				let bgType: BackgroundType = null;
 				if (Array.isArray(content.content)) {
@@ -194,6 +256,7 @@ export class ReaderViewProvider implements WebviewViewProvider {
 			}
 			if (content.type === "getImg") {
 				const isGetFile = content.get === "files";
+				const responseType = content.get === "files" ? "file" : "folder";
 				const options = {
 					canSelectMany: false,
 					canSelectFiles: isGetFile,
@@ -203,13 +266,14 @@ export class ReaderViewProvider implements WebviewViewProvider {
 				if (fileUri.length) {
 					const { fsPath } = fileUri[0];
 					await webview.postMessage(JSON.stringify({
-						type: "file",
+						type: "getImg",
+						get: responseType,
 						id: content.id,
 						path: fsPath,
 					}));
 				} else {
 					await webview.postMessage(JSON.stringify({
-						type: "folder",
+						type: "getImg",
 						id: content.id,
 						path: null,
 					}));

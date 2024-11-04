@@ -6,7 +6,8 @@
 body {
   margin: 0;
   padding: 0;
-  overflow: hidden;
+  overflow-y: auto;
+  overflow-x: hidden;
   width: 100%;
 }
 
@@ -16,14 +17,15 @@ main {
   margin: 3px auto;
 }
 
+div {
+  overflow: hidden;
+}
+
 .contents-block {
   margin-top: 10px;
 }
 
 .button {
-  color: var(--vscode-button-foreground);
-  background-color: var(--vscode-button-background);
-
   margin-top: 3px;
   padding: 7px 0;
 
@@ -36,6 +38,11 @@ main {
 .padding-small-button {
   padding: 4px 0;
   margin-bottom: 10px;
+}
+
+button {
+  color: var(--vscode-button-foreground);
+  background-color: var(--vscode-button-background);
 }
 
 input[type="file"] {
@@ -66,6 +73,7 @@ input[type="checkbox"]:checked {
 
 .info-buttons {
   margin-left: 5px;
+  display: inline-block;
   cursor: pointer;
 }
 
@@ -97,4 +105,59 @@ input[type="checkbox"]:checked {
 .contents-controls option {
   color: var(--vscode-dropdown-foreground);
   background-color: var(--vscode-dropdown-listBackground);
+}
+
+.caution {
+  font-size: 8px;
+}
+
+.list {
+  margin: 5px auto;
+}
+
+.list input[type="text"] {
+  color: var(--vscode-sideBar-foreground);
+  background-color: var(--vscode-sideBar-background);
+  border: none;
+  border-style: none;
+  overflow: auto;
+  width: 100%;
+}
+
+.list i {
+  margin-left: 0;
+}
+
+.list i::before {
+  top: 2.5px;
+  position: relative;
+}
+
+.list-upper {
+  display: grid;
+  align-items: center;
+  grid-template-columns: 1fr auto;
+  gap: 5px;
+}
+
+.unified-font-size-18 {
+  margin-bottom: 3px;
+}
+
+.unified-font-size-18 .contents-title {
+  font-size: 18px;
+}
+
+.unified-font-size-18 i::before {
+  top: 2px;
+  position: relative;
+  height: 18px;
+}
+
+.delete_final_confirmation {
+  display: grid;
+  align-items: center;
+  align-content: center;
+  grid-template-columns: 45% 45%;
+  gap: 5px;
 }
