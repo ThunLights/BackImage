@@ -27,6 +27,11 @@
         "command": "extension.backimage.refresh",
         "title": "%backimage.refresh-title%",
         "icon": "$(refresh)"
+      },
+      {
+        "command": "extension.backimage.update",
+        "title": "%backimage.update-title%",
+        "icon": "$(repo-sync)"
       }
     ],
     "viewsContainers": {
