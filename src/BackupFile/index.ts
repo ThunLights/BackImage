@@ -8,6 +8,7 @@ import { BACKUP_CSS_PATH, BACKUP_JS_PATH, ENCODING, PKG_NAME, VERSION } from "..
 import { basePath, cssPath, jsPath } from "../utils/vscodePath";
 import { utils } from "../utils";
 import { PatchGenerator } from "../PatchGenerator/index";
+import { FolderController } from "../ImgList";
 
 export class FileBackuController {
     constructor() {}
@@ -57,20 +58,30 @@ export class FileBackuController {
         }
     }
 
-    public async update(patch: PatchGenerator): Promise<void> {
-        const base = this.getContent;
-        const content = [
-            base,
-            `//${PKG_NAME}.${VERSION}`,
-            ``,
-            `//END.${PKG_NAME}.${VERSION}`
-        ].join("\n");
-        await this.saveContentTo(jsPath, content);
+    public async update(patch: PatchGenerator, folder: FolderController): Promise<boolean> {
+        if (folder.enable) {
+            const base = this.getContent;
+            const content = this.getContent;
+            const newContent = [
+                base,
+                `//${PKG_NAME}.${VERSION}`,
+                ``,
+                `//END.${PKG_NAME}.${VERSION}`
+            ].join("\n");
+            if (content.js === newContent) {
+                return false;
+            } else {
+                await this.saveContentTo(jsPath, newContent);
+                return true;
+            };
+        } else {
+            return await this.restore();
+        }
     }
 
-    public async setup(): Promise<void> {
+    public async setup(): Promise<boolean> {
         if (this.hasBackup) {
-            return;
+            return false;
         }
 
         const content = this.getContent;
@@ -78,20 +89,24 @@ export class FileBackuController {
         await this.saveContentTo(BACKUP_JS_PATH, content.js);
         await this.saveContentTo(BACKUP_CSS_PATH, content.css);
 
-        await commands.executeCommand("workbench.action.reloadWindow");
+        return true;
     }
 
-    public async restore(): Promise<void> {
+    public async restore(): Promise<boolean> {
         if (!this.hasBackup) {
-            return;
+            return false;
         }
 
         const css = fs.readFileSync(BACKUP_CSS_PATH, ENCODING);
         const js = fs.readFileSync(BACKUP_JS_PATH, ENCODING);
+        const content = this.getContent;
 
-        await this.saveContentTo(cssPath, css);
-        await this.saveContentTo(jsPath, js);
-
-        await commands.executeCommand("workbench.action.reloadWindow");
+        if (content.js === js && content.css === css) {
+            return false;
+        } else {
+            await this.saveContentTo(cssPath, css);
+            await this.saveContentTo(jsPath, js);
+            return true;
+        };
     }
 };

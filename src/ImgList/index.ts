@@ -26,6 +26,7 @@ export class FolderController {
     public static readonly _globalStateKey = "imageLists";
     public static readonly _backgroundStateKey = "backgroundType";
     public static readonly _backgroundImgKey = "backgroundImg";
+    public static readonly _enableKey = "enable";
     public static readonly _backgroundImgInitData = {
         fullscreen: null,
         panel: null,
@@ -47,6 +48,10 @@ export class FolderController {
     public get backgroundImg(): BackgroundImg {
         const content = this._context.globalState.get<BackgroundImg>(FolderController._backgroundImgKey);
         return structChecker(content, BackgroundImgZod) ?? FolderController._backgroundImgInitData;
+    }
+
+    public get enable(): boolean {
+        return this._context.globalState.get<boolean>(FolderController._enableKey) || false;
     }
 
     public async addImgList(folder: Folder) {
@@ -86,5 +91,10 @@ export class FolderController {
         bgImg[id] = content;
         await this._context.globalState.update(FolderController._backgroundImgKey, bgImg);
         return this.backgroundImg;
+    }
+
+    public async updateEnable(content: boolean) {
+        this._context.globalState.update(FolderController._enableKey, content);
+        return this.enable;
     }
 }

@@ -4,15 +4,13 @@ import { BackgroundType, FolderController, fullscreenOther } from "../ImgList/in
 import { utils } from "../utils";
 
 export class ReaderViewProvider implements WebviewViewProvider {
-
     public static readonly viewType = "extension.backimage.readerView";
-	private folder: FolderController;
 
 	constructor(
 		private readonly _extensionUri: Uri,
 		private readonly _context: ExtensionContext,
+		private readonly folder: FolderController,
 	) {
-		this.folder = new FolderController(_context);
     }
 
 	private get imageLists(): string {
@@ -127,7 +125,7 @@ export class ReaderViewProvider implements WebviewViewProvider {
 		const cssUri = webview.asWebviewUri(Uri.joinPath(this._extensionUri, "media", "style.css"));
 		const scriptUri = webview.asWebviewUri(Uri.joinPath(this._extensionUri, "media", "script.js"));
 
-		const enable = this._context.globalState.get<boolean>("enable") || false;
+		const enable = this.folder.enable;
 		const bgType = this.folder.backgroundType;
 
 		const status = enable ? l10n.t("Enable") : l10n.t("Disable");
@@ -218,7 +216,7 @@ export class ReaderViewProvider implements WebviewViewProvider {
 		webview.onDidReceiveMessage(async (e) => {
 			const content = JSON.parse(e);
 			if (content.type === "enable") {
-				await this._context.globalState.update("enable", true);
+				await this.folder.updateEnable(true);
 				await webview.postMessage(JSON.stringify({
 					type: "enable",
 					contents: {
@@ -230,7 +228,7 @@ export class ReaderViewProvider implements WebviewViewProvider {
 				}));
 			}
 			if (content.type === "disable") {
-				await this._context.globalState.update("enable", false);
+				await this.folder.updateEnable(false);
 				await webview.postMessage(JSON.stringify({
 					type: "enable",
 					contents: {

@@ -6,14 +6,19 @@ import {
 
 import { ReaderViewProvider } from "./activity/index";
 import { FileBackuController } from "./BackupFile/index";
-import { FolderController } from "./ImgList";
+import { FolderController } from "./ImgList/index";
+import { PatchGenerator } from "./PatchGenerator/index";
 
 export async function activate(context: ExtensionContext) {
 	const backup = new FileBackuController();
+	const patch = new PatchGenerator();
+	const folder = new FolderController(context);
 
-	await backup.setup();
+	if (await backup.setup()) {
+		await commands.executeCommand("workbench.action.reloadWindow");
+	};
 
-	const readerViewProvider = new ReaderViewProvider(context.extensionUri, context);
+	const readerViewProvider = new ReaderViewProvider(context.extensionUri, context, folder);
 
 	context.subscriptions.push(
 		window.registerWebviewViewProvider(ReaderViewProvider.viewType, readerViewProvider, {
@@ -22,7 +27,9 @@ export async function activate(context: ExtensionContext) {
 			}
 		}),
 		commands.registerCommand("extension.backimage.refresh", async () => {
-            await commands.executeCommand("workbench.action.reloadWindow");
+			if (await backup.update(patch, folder)) {
+				await commands.executeCommand("workbench.action.reloadWindow");
+			}
 		})
 	);
 }
