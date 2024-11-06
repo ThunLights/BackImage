@@ -179,3 +179,17 @@ input[type="checkbox"]:checked {
 .break-all {
   word-break: break-all;
 }
+
+.settings-panel {
+  margin: 3px 0;
+  width: 100%;
+}
+
+.settings-panel input {
+  width: 100%;
+}
+
+.settings-panel strong {
+  cursor: text;
+  padding: 2px 4px;
+}

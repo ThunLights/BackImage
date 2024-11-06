@@ -127,11 +127,15 @@ export class ReaderViewProvider implements WebviewViewProvider {
 
 		const enable = this.folder.enable;
 		const bgType = this.folder.backgroundType;
+		const opacities = this.folder.elementsOpacity;
 
 		const status = enable ? l10n.t("Enable") : l10n.t("Disable");
 		const statusPanel = l10n.t("Current Status");
 		const statusColor = enable ? "green" : "red";
 		const statusChangerLabel = enable ? l10n.t("BackImage to disable") : l10n.t("BackImage to enable");
+		const dataVScodeContext = JSON.stringify({
+			preventDefaultContextMenuItems: true
+		});
 
 		webview.options = {
 			enableScripts: true,
@@ -169,31 +173,91 @@ export class ReaderViewProvider implements WebviewViewProvider {
 					</div>
 
 					<div class="contents-block margin-top">
-						<p class="inline contents-small-title">${l10n.t("Full Screen")}</p>
+						<div class="list-upper">
+							<p class="inline contents-small-title">${l10n.t("Full Screen")}</p>
+							<i id="fullscreen-info" class="info-buttons codicon codicon-symbol-property"></i>
+						</div>
 						<div class="contents-controls">
 							<button class="contents-switch" id="full-screen-button">${this.onOrOff(bgType === "fullscreen")}</button>
 							<select class="contents-selector" id="full-screen">${this.options}</select>
 						</div>
+						<div id="full-screen-settings-panel" class="settings-panel" style="display: none;">
+							<div>
+								<p>${l10n.t("Transparency")}: <strong
+									id="full-screen-opacities-content"
+									class="extra-input"
+									contenteditable="true"
+								>${opacities.fullscreen * 100}</strong>% <small>(${l10n.t("Default")}: 85%)</small></p>
+							</div>
+							<div>
+								<input id="full-screen-opacity-range" type="range" value="${opacities.fullscreen * 100}" min="0" max="100" />
+							</div>
+						</div>
 					</div>
 					<div class="contents-block margin-top">
-						<p class="inline contents-small-title">${l10n.t("Side Bar")}</p>
+						<div class="list-upper">
+							<p class="inline contents-small-title">${l10n.t("Side Bar")}</p>
+							<i id="sideBar-info" class="info-buttons codicon codicon-symbol-property"></i>
+						</div>
 						<div class="contents-controls">
 							<button class="contents-switch" id="side-bar-button">${this.onOrOff(Boolean(bgType && bgType !== "fullscreen" && bgType.includes("side-bar")))}</button>
 							<select class="contents-selector" id="side-bar">${this.options}</select>
 						</div>
+						<div id="side-bar-settings-panel" class="settings-panel" style="display: none;">
+							<div>
+								<p>${l10n.t("Transparency")}: <strong
+									id="side-bar-opacities-content"
+									class="extra-input"
+									contenteditable="true"
+								>${opacities.sideBar * 100}</strong>% <small>(${l10n.t("Default")}: 85%)</small></p>
+							</div>
+							<div>
+								<input id="side-bar-opacity-range" type="range" value="${opacities.sideBar * 100}" min="0" max="100" />
+							</div>
+						</div>
 					</div>
 					<div class="contents-block margin-top">
-						<p class="inline contents-small-title">${l10n.t("Editor")}</p>
+						<div class="list-upper">
+							<p class="inline contents-small-title">${l10n.t("Editor")}</p>
+							<i id="editor-info" class="info-buttons codicon codicon-symbol-property"></i>
+						</div>
 						<div class="contents-controls">
 							<button class="contents-switch" id="editor-button">${this.onOrOff(Boolean(bgType && bgType !== "fullscreen" && bgType.includes("editor")))}</button>
 							<select class="contents-selector" id="editor">${this.options}</select>
 						</div>
+						<div id="editor-settings-panel" class="settings-panel" style="display: none;">
+							<div>
+								<p>${l10n.t("Transparency")}: <strong
+									id="editor-opacities-content"
+									class="extra-input"
+									contenteditable="true"
+								>${opacities.editor * 100}</strong>% <small>(${l10n.t("Default")}: 85%)</small></p>
+							</div>
+							<div>
+								<input id="editor-opacity-range" type="range" value="${opacities.editor * 100}" min="0" max="100" />
+							</div>
+						</div>
 					</div>
 					<div class="contents-block margin-top">
-						<p class="inline contents-small-title">${l10n.t("Panel")}</p>
+						<div class="list-upper">
+							<p class="inline contents-small-title">${l10n.t("Panel")}</p>
+							<i id="panel-info" class="info-buttons codicon codicon-symbol-property"></i>
+						</div>
 						<div class="contents-controls">
 							<button class="contents-switch" id="panel-button">${this.onOrOff(Boolean(bgType && bgType !== "fullscreen" && bgType.includes("panel")))}</button>
 							<select class="contents-selector" id="panel">${this.options}</select>
+						</div>
+						<div id="panel-settings-panel" class="settings-panel" style="display: none;">
+							<div>
+								<p>${l10n.t("Transparency")}: <strong
+									id="panel-opacities-content"
+									class="extra-input"
+									contenteditable="true"
+								>${opacities.panel * 100}</strong>% <small>(${l10n.t("Default")}: 85%)</small></p>
+							</div>
+							<div>
+								<input id="panel-opacity-range" type="range" value="${opacities.panel * 100}" min="0" max="100" />
+							</div>
 						</div>
 					</div>
 					<div class="contents-block">
@@ -254,6 +318,9 @@ export class ReaderViewProvider implements WebviewViewProvider {
 			}
 			if (content.type === "updateSelect") {
 				await this.folder.updateBackgroundImg(content.id, content.content);
+			}
+			if (content.type === "updateOpacity") {
+				await this.folder.updateOpacity(content.id, content.content);
 			}
 			if (content.type === "imgList") {
 				if (content.action === "add") {

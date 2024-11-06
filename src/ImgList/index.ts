@@ -1,6 +1,8 @@
 import { ExtensionContext } from "vscode";
-import z from "zod";
-import { BackgroundImgZod, structChecker } from "../utils/struct";
+import { z } from "zod";
+
+import { BackgroundImgZod, ElementsOpacityZod, structChecker } from "../utils/struct";
+import { formatOpacity } from "../utils/opacity";
 
 export type StringOrNull = string | null;
 
@@ -22,16 +24,25 @@ export type Folder = {
 
 export type BackgroundImg = z.infer<typeof BackgroundImgZod>;
 
+export type ElementsOpacity = z.infer<typeof ElementsOpacityZod>;
+
 export class FolderController {
     public static readonly _globalStateKey = "imageLists";
     public static readonly _backgroundStateKey = "backgroundType";
     public static readonly _backgroundImgKey = "backgroundImg";
     public static readonly _enableKey = "enable";
+    public static readonly _elementsOpacityKey = "elementsOpacity";
     public static readonly _backgroundImgInitData = {
         fullscreen: null,
         panel: null,
         sideBar: null,
         editor: null,
+    };
+    public static readonly _elementsOpacityInitData = {
+        fullscreen: 0.85,
+        panel: 0.85,
+        sideBar: 0.85,
+        editor: 0.85,
     };
 
     constructor(private _context: ExtensionContext) {
@@ -52,6 +63,11 @@ export class FolderController {
 
     public get enable(): boolean {
         return this._context.globalState.get<boolean>(FolderController._enableKey) || false;
+    }
+
+    public get elementsOpacity() {
+        const content = this._context.globalState.get<ElementsOpacity>(FolderController._elementsOpacityKey);
+        return structChecker(content, ElementsOpacityZod) ?? FolderController._elementsOpacityInitData;
     }
 
     public async addImgList(folder: Folder) {
@@ -94,7 +110,14 @@ export class FolderController {
     }
 
     public async updateEnable(content: boolean) {
-        this._context.globalState.update(FolderController._enableKey, content);
+        await this._context.globalState.update(FolderController._enableKey, content);
         return this.enable;
+    }
+
+    public async updateOpacity(id: AllBackgroundTypes, content: number) {
+        const opacities = this.elementsOpacity;
+        opacities[id] = formatOpacity(content);
+        await this._context.globalState.update(FolderController._elementsOpacityKey, opacities);
+        return this.elementsOpacity;
     }
 }

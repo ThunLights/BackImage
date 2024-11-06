@@ -14,6 +14,18 @@ const infoSideBar = document.getElementById("switch-side-bar");
 const infoEditor = document.getElementById("switch-editor");
 const infoPanel = document.getElementById("switch-panel");
 
+const extraInputAllowCharacter = [
+	"0",
+	"1",
+	"2",
+	"3",
+	"4",
+	"5",
+	"6",
+	"7",
+	"8",
+	"9",
+];
 const select2button = {
 	"full-screen": "full-screen-button",
 	"side-bar": "side-bar-button",
@@ -42,6 +54,39 @@ for (const [button, status] of Object.entries(button2Status)) {
 	const selectorId = button2select[button];
 	const systemId = selectIdChanger(selectorId);
 	const selectElement = document.getElementById(selectorId);
+	const selectorSettingsPanel = document.getElementById(`${selectorId}-settings-panel`);
+	const selectorRangeElement = document.getElementById(`${selectorId}-opacity-range`);
+	const selectorValueElement = document.getElementById(`${selectorId}-opacities-content`);
+	selectorRangeElement.oninput = async (e) => {
+		selectorValueElement.textContent = e.target.value;
+		await vscode.postMessage(JSON.stringify({
+			type: "updateOpacity",
+			id: systemId,
+			content: Number(e.target.value) / 100,
+		}));
+	};
+	selectorValueElement.onkeyup = async (e) => {
+		e.target.textContent = charChecker(e.target.textContent);
+		if (e.key === "Enter") {
+			let num = Number(e.target.textContent);
+			if (isNaN(num)) {
+				num = 85;
+			}
+			if (num > 100) {
+				num = 100;
+			}
+			if (0 > num) {
+				num = 0;
+			}
+			e.target.textContent = num.toString();
+			selectorRangeElement.value = num.toString();
+			await vscode.postMessage(JSON.stringify({
+				type: "updateOpacity",
+				id: systemId,
+				content: num / 100,
+			}));
+		}
+	};
 	selectElement.onchange = async () => {
 		const value = selectElement.value === "" ? null : selectElement.value;
 		await vscode.postMessage(JSON.stringify({
@@ -49,6 +94,13 @@ for (const [button, status] of Object.entries(button2Status)) {
 			id: systemId,
 			content: value,
 		}));
+	};
+	document.getElementById(`${systemId}-info`).onclick = async () => {
+		if (selectorSettingsPanel.style.display === "none") {
+			selectorSettingsPanel.style.display = "block";
+		} else {
+			selectorSettingsPanel.style.display = "none";
+		}
 	};
 	document.getElementById(button).onclick = async () => {
 		status.value = status.value === "enable" ? "disable" : "enable";
@@ -257,6 +309,17 @@ function scriptUpdate(ids) {
 			}));
 		};
 	}
+}
+
+function charChecker(input) {
+	let result = "";
+	const chars = input.split("");
+	for (const char of chars) {
+		if (extraInputAllowCharacter.includes(char)) {
+			result += char;
+		}
+	}
+	return result;
 }
 
 function selectorUpdate(options) {
