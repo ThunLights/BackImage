@@ -3,18 +3,26 @@ import { Uri } from "vscode";
 
 import { utils } from "../utils/index";
 
-export class AbsPatchGenerator<T extends { images: string[] }> {
+export class AbsPatchGenerator<T> {
     constructor(protected config: T) {}
 
-    protected normalizeImageUrls(images: string[]) {
-        return images.map(imageUrl => {
-            if (!imageUrl.startsWith("file://")) {
-                return imageUrl;
-            }
+    protected normalizeImageUrls<T extends Array<string> | string>(images: T ): T {
+        if (Array.isArray(images)) {
+            return images.map(imageUrl => {
+                if (!imageUrl.startsWith("file://")) {
+                    return imageUrl;
+                }
+    
+                const url = imageUrl.replace("file://", "vscode-file://vscode-app");
+                return Uri.parse(url).toString();
+            }) as T;
+        }
 
-            const url = imageUrl.replace("file://", "vscode-file://vscode-app");
-            return Uri.parse(url).toString();
-        });
+        if (!images.startsWith("file://")) {
+            return images;
+        }
+        const url = images.replace("file://", "vscode-file://vscode-app");
+        return Uri.parse(url).toString() as T;
     }
 
     protected compileCSS(source: string) {
@@ -30,15 +38,11 @@ export class AbsPatchGenerator<T extends { images: string[] }> {
     }
 
     public create() {
-        if (!this.config?.images.length) {
-            return "";
-        }
-
         const style = this.compileCSS(this.getStyle());
         const script = this.getScript().trim();
 
         return [
-            `
+            /*js*/`
                 var style = document.createElement("style");
                 style.textContent = ${JSON.stringify(style)};
                 document.head.appendChild(style);
