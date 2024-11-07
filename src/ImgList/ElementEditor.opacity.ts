@@ -7,9 +7,9 @@ export class OpacityEditor extends ElementEditor {
     public static readonly _key = "elementsOpacity";
     public static readonly _initData = {
         fullscreen: 0.85,
-        panel: 0.85,
-        sideBar: 0.85,
         editor: 0.85,
+        panel: 0.2,
+        sideBar: 0.2,
     };
 
     constructor(_context: ExtensionContext) {
