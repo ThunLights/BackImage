@@ -1,4 +1,4 @@
-import stylis from "stylis";
+import { compile, serialize, stringify } from "stylis";
 import { Uri } from "vscode";
 
 import { utils } from "../utils/index";
@@ -9,24 +9,33 @@ export class AbsPatchGenerator<T> {
     protected normalizeImageUrls<T extends Array<string> | string>(images: T ): T {
         if (Array.isArray(images)) {
             return images.map(imageUrl => {
-                if (!imageUrl.startsWith("file://")) {
+                if (imageUrl.startsWith("vscode-file://vscode-app/")) {
                     return imageUrl;
+                }
+                if (!imageUrl.startsWith("file://")) {
+                    return "vscode-file://vscode-app/" + imageUrl;
                 }
     
                 const url = imageUrl.replace("file://", "vscode-file://vscode-app");
                 return Uri.parse(url).toString();
+            }).map(value => {
+                return value.replaceAll("\\", `\\\\`);
             }) as T;
         }
 
-        if (!images.startsWith("file://")) {
-            return images;
+        const image = images.replaceAll("\\", "\\\\");
+        if (image.startsWith("vscode-file://vscode-app/")) {
+            return image as T;
         }
-        const url = images.replace("file://", "vscode-file://vscode-app");
+        if (!images.startsWith("file://")) {
+            return ("vscode-file://vscode-app/" + image) as T;
+        }
+        const url = image.replace("file://", "vscode-file://vscode-app");
         return Uri.parse(url).toString() as T;
     }
 
     protected compileCSS(source: string) {
-        return stylis.serialize(stylis.compile(source), stylis.stringify);
+        return serialize(compile(source), stringify);
     }
 
     protected getStyle() {
@@ -43,8 +52,8 @@ export class AbsPatchGenerator<T> {
 
         return [
             /*js*/`
-                var style = document.createElement("style");
-                style.textContent = ${JSON.stringify(style)};
+                const style = document.createElement("style");
+                style.textContent = ${JSON.stringify(style.replaceAll(`"`, `\"`))};
                 document.head.appendChild(style);
             `,
             script

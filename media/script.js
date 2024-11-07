@@ -3,6 +3,7 @@ const vscode = acquireVsCodeApi();
 
 const statusChanger = document.getElementById("status-changer");
 const applySettingsButton = document.getElementById("apply-settings-button");
+const resetSettingsButton = document.getElementById("reset-settings-button");
 const statusPanel = document.getElementById("status-panel");
 const filePlusButton = document.getElementById("file-plus");
 const dirPlusButton = document.getElementById("dir-plus");
@@ -140,6 +141,12 @@ dirPlusButton.onclick = async () => {
 applySettingsButton.onclick = async () => {
 	await vscode.postMessage(JSON.stringify({
 		type: "update"
+	}));
+};
+
+resetSettingsButton.onclick = async () => {
+	await vscode.postMessage(JSON.stringify({
+		type: "restore"
 	}));
 };
 

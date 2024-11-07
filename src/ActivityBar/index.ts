@@ -177,6 +177,9 @@ export class ReaderViewProvider implements WebviewViewProvider {
 						<button id="apply-settings-button" class="button padding-small-button">${l10n.t("Apply settings")}</button>
 					</div>
 					<div class="contents-block">
+						<button id="reset-settings-button" class="button padding-small-button">${l10n.t("Disable reflection of settings")}</button>
+					</div>
+					<div class="contents-block">
 						<p>${statusPanel}: <strong style="color: ${statusColor};" id="status-panel">${status}</strong></p>
 						<button id="status-changer" class="button">${statusChangerLabel}</button>
 					</div>
@@ -317,6 +320,10 @@ export class ReaderViewProvider implements WebviewViewProvider {
 			}
 			if (content.type === "log") {
 				console.log(content.text);
+			}
+			if (content.type === "restore") {
+				await this.folder.enable.update(false);
+				await commands.executeCommand("extension.backimage.restore");
 			}
 			if (content.type === "start") {
 				await webview.postMessage(JSON.stringify({

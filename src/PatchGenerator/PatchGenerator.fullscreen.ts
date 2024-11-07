@@ -17,12 +17,13 @@ export class FullscreenPatchGenerator<T extends FullScreenPatchConfig> extends A
     protected readonly position = "center";
 
     protected get curConfig(): T {
-        if (typeof this.config.content === "string") {
-            this.config.content = this.normalizeImageUrls(this.config.content);
+        const cur = this.config;
+        if (typeof cur.content === "string") {
+            cur.content = this.normalizeImageUrls(cur.content);
         } else {
-            this.config.content.images = this.normalizeImageUrls(this.config.content.images);
+            cur.content.images = this.normalizeImageUrls(cur.content.images);
         }
-        return this.config;
+        return cur;
     }
 
     protected getStyle(): string {
@@ -35,6 +36,8 @@ export class FullscreenPatchGenerator<T extends FullScreenPatchConfig> extends A
                 background-position: ${this.position};
                 opacity: ${opacity.toString()};
                 transition: 0.3s;
+            }
+            body:has([id="workbench.parts.editor"]) {
                 background-image: var(${this.cssvariable});
             }
         `;
@@ -74,7 +77,7 @@ export class FullscreenPatchGenerator<T extends FullScreenPatchConfig> extends A
                 }
 
                 if (interval > 0) {
-                    setInterval(setNextImg, interval * 1000);
+                    setInterval(setNextImg, interval);
                 }
 
                 setNextImg();

@@ -4,11 +4,12 @@ import path from "path";
 
 import { l10n, window } from "vscode";
 
-import { BACKUP_CSS_PATH, BACKUP_JS_PATH, ENCODING, PKG_NAME, VERSION } from "../utils/constants";
+import { BACKUP_CSS_PATH, BACKUP_JS_PATH, ENCODING, ORIGINAL_JS_CONTENT_END, ORIGINAL_JS_CONTENT_START, PKG_NAME, VERSION } from "../utils/constants";
 import { basePath, cssPath, jsPath } from "../utils/vscodePath";
 import { utils } from "../utils";
 import { FolderController } from "../ImgList";
-import { PatchGenerator } from "../PatchGenerator/index";
+import { PatchGenerator, PatchGeneratorError } from "../PatchGenerator/index";
+import { hash } from "../utils/hash";
 
 export class FileBackuController {
     constructor() {}
@@ -58,23 +59,26 @@ export class FileBackuController {
         }
     }
 
-    public async update(folder: FolderController, patch: PatchGenerator): Promise<boolean> {
-        if (folder.enable && folder.bgType.data) {
-            const base = this.getContent;
+    public async update(folder: FolderController): Promise<boolean> {
+        if (folder.enable.data && folder.bgType.data) {
             const content = this.getContent;
-            const newContent = [
-                base,
-                `//${PKG_NAME}.${VERSION}`,
-                ``,
-                `//END.${PKG_NAME}.${VERSION}`
-            ].join("\n");
-//            if (content.js === newContent) {
-//                return false;
-//            } else {
-//                await this.saveContentTo(jsPath, newContent);
-//                return true;
-//            };
-            return false;
+            const patchContent = await PatchGenerator.create(folder);
+            if (patchContent instanceof PatchGeneratorError) {
+                await window.showErrorMessage(`Code${patchContent.code}: ${patchContent.content}`);
+                return false;
+            }
+            const start = `//${ORIGINAL_JS_CONTENT_START}-${hash(patchContent)}`;
+            const end = `//${ORIGINAL_JS_CONTENT_END}`;
+            const newContent = [ content.js, start, patchContent, end ].join("\n");
+            if (content.js.includes(start)) {
+                return false;
+            }
+            if (content.js === newContent) {
+                return false;
+            } else {
+                await this.saveContentTo(jsPath, newContent);
+                return true;
+            };
         } else {
             return await this.restore();
         }

@@ -7,14 +7,13 @@ import {
 import { ReaderViewProvider } from "./ActivityBar/index";
 import { FileBackuController } from "./BackupFile/index";
 import { FolderController } from "./ImgList/index";
-import { PatchGenerator } from "./PatchGenerator/index";
 
 export async function activate(context: ExtensionContext) {
 	const backup = new FileBackuController();
 	const folder = new FolderController(context);
-	const patch = new PatchGenerator(folder);
 
-	if (await backup.setup()) {
+	if (await backup.setup() || await backup.update(folder) || folder.refresh.data) {
+		await folder.refresh.update(false);
 		await commands.executeCommand("workbench.action.reloadWindow");
 	};
 
@@ -26,8 +25,13 @@ export async function activate(context: ExtensionContext) {
 				retainContextWhenHidden: true,
 			}
 		}),
+		commands.registerCommand("extension.backimage.restore", async () => {
+			await backup.restore();
+			await commands.executeCommand("workbench.action.reloadWindow");
+		}),
 		commands.registerCommand("extension.backimage.refresh", async () => {
-			if (await backup.update(folder, patch)) {
+			if (await backup.update(folder)) {
+				await folder.refresh.update(true);
 				await commands.executeCommand("workbench.action.reloadWindow");
 			}
 		})

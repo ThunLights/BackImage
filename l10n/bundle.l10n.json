@@ -29,5 +29,6 @@
     "Interval": "Interval",
     "Seconds": "Seconds",
     "Random": "Random",
-    "*Press enter to save": "*Press enter to save"
+    "*Press enter to save": "*Press enter to save",
+    "Disable reflection of settings": "Disable reflection of settings"
 }

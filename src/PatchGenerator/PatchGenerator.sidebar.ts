@@ -1,14 +1,14 @@
 import { css } from "../utils/css";
 import { FullScreenPatchConfig, FullscreenPatchGenerator } from "./PatchGenerator.fullscreen";
 
-export class PanelPatchGenerator extends FullscreenPatchGenerator<FullScreenPatchConfig> {
-    protected readonly cssvariable = "--extension-backimage-panel-img";
+export class SidebarPatchGenerator extends FullscreenPatchGenerator<FullScreenPatchConfig> {
+    protected cssvariable = "--extension-backimage-sidebar-img";
 
     protected getStyle(): string {
         const { opacity } = this.curConfig;
 
         return css`
-            .split-view-view > .part.panel::after {
+            .split-view-view > .part.sidebar::after {
                 content: "";
                 position: absolute;
                 width: 100%;

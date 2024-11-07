@@ -29,5 +29,6 @@
     "Interval": "インターバル",
     "Seconds": "秒",
     "Random": "ランダム",
-    "*Press enter to save": "※Enterを押してセーブ"
+    "*Press enter to save": "※Enterを押してセーブ",
+    "Disable reflection of settings": "設定の反映を無効化する"
 }
