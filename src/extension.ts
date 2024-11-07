@@ -4,7 +4,7 @@ import {
 	window
 } from "vscode";
 
-import { ReaderViewProvider } from "./Activity/index";
+import { ReaderViewProvider } from "./ActivityBar/index";
 import { FileBackuController } from "./BackupFile/index";
 import { FolderController } from "./ImgList/index";
 import { PatchGenerator } from "./PatchGenerator/index";
