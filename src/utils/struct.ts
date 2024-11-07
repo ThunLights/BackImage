@@ -1,4 +1,4 @@
-import { object, z } from "zod";
+import { z } from "zod";
 
 export const BackgroundImgZod = z.object({
     fullscreen: z.string().nullable(),

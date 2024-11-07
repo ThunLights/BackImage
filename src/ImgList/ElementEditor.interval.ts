@@ -1,7 +1,8 @@
 import { ExtensionContext } from "vscode";
+import { z } from "zod";
+
 import { ElementEditor } from "./ElementEditor.base";
 import { recordChecker } from "../utils/struct";
-import { z } from "zod";
 
 export class IntervalEditor extends ElementEditor {
     public static readonly _key = "elementsInterval";

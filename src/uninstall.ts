@@ -1,4 +1,4 @@
-import { FileBackuController } from "./BackupFile";
+import { FileBackuController } from "./BackupFile/index";
 
 async function uninstall() {
     const backup = new FileBackuController();

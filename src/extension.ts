@@ -4,14 +4,13 @@ import {
 	window
 } from "vscode";
 
-import { ReaderViewProvider } from "./activity/index";
+import { ReaderViewProvider } from "./Activity/index";
 import { FileBackuController } from "./BackupFile/index";
 import { FolderController } from "./ImgList/index";
 import { PatchGenerator } from "./PatchGenerator/index";
 
 export async function activate(context: ExtensionContext) {
 	const backup = new FileBackuController();
-	const patch = new PatchGenerator();
 	const folder = new FolderController(context);
 
 	if (await backup.setup()) {
@@ -27,7 +26,7 @@ export async function activate(context: ExtensionContext) {
 			}
 		}),
 		commands.registerCommand("extension.backimage.refresh", async () => {
-			if (await backup.update(patch, folder)) {
+			if (await backup.update(folder)) {
 				await commands.executeCommand("workbench.action.reloadWindow");
 			}
 		})
