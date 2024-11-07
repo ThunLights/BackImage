@@ -12,8 +12,7 @@ export async function activate(context: ExtensionContext) {
 	const backup = new FileBackuController();
 	const folder = new FolderController(context);
 
-	if (await backup.setup() || await backup.update(folder) || folder.refresh.data) {
-		await folder.refresh.update(false);
+	if (await backup.setup() || await backup.update(folder)) {
 		await commands.executeCommand("workbench.action.reloadWindow");
 	};
 
@@ -31,7 +30,6 @@ export async function activate(context: ExtensionContext) {
 		}),
 		commands.registerCommand("extension.backimage.refresh", async () => {
 			if (await backup.update(folder)) {
-				await folder.refresh.update(true);
 				await commands.executeCommand("workbench.action.reloadWindow");
 			}
 		})

@@ -76,6 +76,7 @@ export class FileBackuController {
             if (content.js === newContent) {
                 return false;
             } else {
+                await this.restore();
                 await this.saveContentTo(jsPath, newContent);
                 return true;
             };

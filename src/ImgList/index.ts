@@ -7,7 +7,6 @@ import { ImgListEditor } from "./ElementEditor.imgList";
 import { IntervalEditor } from "./ElementEditor.interval";
 import { OpacityEditor } from "./ElementEditor.opacity";
 import { RandomEditor } from "./ElementEditor.random";
-import { RefreshEditor } from "./ElementEditor.refresh";
 
 export class FolderController {
     constructor(private _context: ExtensionContext) {
@@ -23,10 +22,6 @@ export class FolderController {
 
     public get enable() {
         return new EnableEditor(this._context);
-    }
-
-    public get refresh() {
-        return new RefreshEditor(this._context);
     }
 
     public get imgList() {
