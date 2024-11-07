@@ -11,7 +11,10 @@ export type FullScreenPatchConfig = {
 }
 
 export class FullscreenPatchGenerator<T extends FullScreenPatchConfig> extends AbsPatchGenerator<T> {
-    protected readonly cssvariable = "--extension-backimage-fullscreen-img";
+    protected cssvariable = "--extension-backimage-fullscreen-img";
+
+    protected readonly size = "cover";
+    protected readonly position = "center";
 
     protected get curConfig(): T {
         if (typeof this.config.content === "string") {
@@ -26,10 +29,10 @@ export class FullscreenPatchGenerator<T extends FullScreenPatchConfig> extends A
         const { opacity } = this.curConfig;
         return css`
             body {
-                background-size: cover;
+                background-size: ${this.size};
                 background-repeat: no-repeat;
                 background-attachment: fixed;
-                background-position: center;
+                background-position: ${this.position};
                 opacity: ${opacity.toString()};
                 transition: 0.3s;
                 background-image: var(${this.cssvariable});

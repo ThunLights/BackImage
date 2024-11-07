@@ -48,8 +48,6 @@ export class AbsPatchGenerator<T> {
                 document.head.appendChild(style);
             `,
             script
-        ]
-            .map(n => utils.withIIFE(n))
-            .join(';');
+        ].map(n => utils.withIIFE(n)).join(';');
     }
 }
