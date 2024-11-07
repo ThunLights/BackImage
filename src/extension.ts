@@ -12,6 +12,7 @@ import { PatchGenerator } from "./PatchGenerator/index";
 export async function activate(context: ExtensionContext) {
 	const backup = new FileBackuController();
 	const folder = new FolderController(context);
+	const patch = new PatchGenerator(folder);
 
 	if (await backup.setup()) {
 		await commands.executeCommand("workbench.action.reloadWindow");
@@ -26,7 +27,7 @@ export async function activate(context: ExtensionContext) {
 			}
 		}),
 		commands.registerCommand("extension.backimage.refresh", async () => {
-			if (await backup.update(folder)) {
+			if (await backup.update(folder, patch)) {
 				await commands.executeCommand("workbench.action.reloadWindow");
 			}
 		})

@@ -26,7 +26,7 @@ export class ReaderViewProvider implements WebviewViewProvider {
 				const description = utils.blockXSS(img.description);
 				const elementType = img.type === "file" ? "files" : "directories";
 				const random = this.folder.random.data[img.id] ?? false;
-				const interval = this.folder.interval.data[img.id] ?? 10 * 1000 ;
+				const interval = this.folder.interval.data[img.id] ?? 10 * 1000;
 				elements.push(/*html*/`
 					<div class="list">
 						<div class="list-infos">

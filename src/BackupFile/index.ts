@@ -8,6 +8,7 @@ import { BACKUP_CSS_PATH, BACKUP_JS_PATH, ENCODING, PKG_NAME, VERSION } from "..
 import { basePath, cssPath, jsPath } from "../utils/vscodePath";
 import { utils } from "../utils";
 import { FolderController } from "../ImgList";
+import { PatchGenerator } from "../PatchGenerator/index";
 
 export class FileBackuController {
     constructor() {}
@@ -57,7 +58,7 @@ export class FileBackuController {
         }
     }
 
-    public async update(folder: FolderController): Promise<boolean> {
+    public async update(folder: FolderController, patch: PatchGenerator): Promise<boolean> {
         if (folder.enable && folder.bgType.data) {
             const base = this.getContent;
             const content = this.getContent;
