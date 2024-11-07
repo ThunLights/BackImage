@@ -45,10 +45,6 @@ button {
   background-color: var(--vscode-button-background);
 }
 
-input[type="file"] {
-  display: none;
-}
-
 input[type="checkbox"] {
   color: var(--vscode-checkbox-foreground);
   background-color: var(--vscode-checkbox-background);
@@ -152,6 +148,13 @@ input[type="checkbox"]:checked {
   align-items: center;
   grid-template-columns: 1fr auto;
   gap: 5px;
+}
+
+.list input {
+  color: var(--vscode-sideBar-foreground);
+  background-color: var(--vscode-sideBar-background);
+  margin-bottom: 3px;
+  border-bottom: solid 1px gray;
 }
 
 .unified-font-size-18 {

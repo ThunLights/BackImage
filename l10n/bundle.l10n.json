@@ -25,5 +25,9 @@
     "Rename": "Rename",
     "Change description": "Change description",
     "Transparency": "Transparency",
-    "Default": "Default"
+    "Default": "Default",
+    "Interval": "Interval",
+    "Seconds": "Seconds",
+    "Random": "Random",
+    "*Press enter to save": "*Press enter to save"
 }

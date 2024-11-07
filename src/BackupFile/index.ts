@@ -2,12 +2,11 @@ import { tmpdir } from "os";
 import fs from "fs";
 import path from "path";
 
-import { commands, l10n, window } from "vscode";
+import { l10n, window } from "vscode";
 
 import { BACKUP_CSS_PATH, BACKUP_JS_PATH, ENCODING, PKG_NAME, VERSION } from "../utils/constants";
 import { basePath, cssPath, jsPath } from "../utils/vscodePath";
 import { utils } from "../utils";
-import { PatchGenerator } from "../PatchGenerator/index";
 import { FolderController } from "../ImgList";
 
 export class FileBackuController {
@@ -58,8 +57,8 @@ export class FileBackuController {
         }
     }
 
-    public async update(patch: PatchGenerator, folder: FolderController): Promise<boolean> {
-        if (folder.enable) {
+    public async update(folder: FolderController): Promise<boolean> {
+        if (folder.enable && folder.bgType.data) {
             const base = this.getContent;
             const content = this.getContent;
             const newContent = [
@@ -68,12 +67,13 @@ export class FileBackuController {
                 ``,
                 `//END.${PKG_NAME}.${VERSION}`
             ].join("\n");
-            if (content.js === newContent) {
-                return false;
-            } else {
-                await this.saveContentTo(jsPath, newContent);
-                return true;
-            };
+//            if (content.js === newContent) {
+//                return false;
+//            } else {
+//                await this.saveContentTo(jsPath, newContent);
+//                return true;
+//            };
+            return false;
         } else {
             return await this.restore();
         }

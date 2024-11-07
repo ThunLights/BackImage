@@ -1,7 +1,8 @@
 import { commands, ExtensionContext, l10n, OpenDialogOptions, Uri, WebviewView, WebviewViewProvider, window } from "vscode";
 
-import { BackgroundType, FolderController, fullscreenOther } from "../ImgList/index";
+import { FolderController } from "../ImgList/index";
 import { utils } from "../utils";
+import { BackgroundType, fullscreenOther } from "../ImgList/ElementEditor.base";
 
 export class ReaderViewProvider implements WebviewViewProvider {
     public static readonly viewType = "extension.backimage.readerView";
@@ -14,7 +15,7 @@ export class ReaderViewProvider implements WebviewViewProvider {
     }
 
 	private get imageLists(): string {
-		const imgList = this.folder.imageLists;
+		const imgList = this.folder.imgList.data;
 		let content = /*html*/`<p>${utils.blockXSS(l10n.t("There are no listings registered"))}</p>`;
 
 		if (imgList.length) {
@@ -24,6 +25,8 @@ export class ReaderViewProvider implements WebviewViewProvider {
 				const name = utils.blockXSS(img.name);
 				const description = utils.blockXSS(img.description);
 				const elementType = img.type === "file" ? "files" : "directories";
+				const random = this.folder.random.data[img.id] ?? false;
+				const interval = this.folder.interval.data[img.id] ?? 10 * 1000 ;
 				elements.push(/*html*/`
 					<div class="list">
 						<div class="list-infos">
@@ -46,6 +49,15 @@ export class ReaderViewProvider implements WebviewViewProvider {
 								<i id="edit_path_${id}" class="info-buttons codicon codicon-edit" style="display: none;"></i>
 							</div>
 							<div id="more_info_${id}" class="more-info" style="display: none">
+								${img.type === "folder" ? /*js*/`
+								<div>
+									<p class="inline">${l10n.t("Random")}: <input id="random_${id}" type="checkbox" ${random ? "checked" : ""}/></p>
+								</div>
+								<div>
+									<p class="inline">${l10n.t("Interval")}: <strong id="interval_${id}" contenteditable="true">${interval / 1000}</strong>${l10n.t("Seconds")}</p>
+									<small class="inline">${l10n.t("*Press enter to save")}</small>
+								</div>
+								` : ""}
 								<p class="inline">${l10n.t("Description")}</p>
 								<i id="edit_description_${id}" class="inline info-buttons codicon codicon-edit" style="display: none;"></i>
 								<p>${this.descriptionParser(description)}</p>
@@ -90,7 +102,7 @@ export class ReaderViewProvider implements WebviewViewProvider {
 	}
 
 	private get options(): string {
-		const folders = this.folder.imageLists;
+		const folders = this.folder.imgList.data;
 		let content = /*html*/`<option value="" selected>${utils.blockXSS(l10n.t("Not Selected"))}</option>`;
 		for (const folder of folders) {
 			content += `\n` + /*html*/`<option value="${folder.id}">${utils.blockXSS(folder.name)}</option>`;
@@ -125,17 +137,14 @@ export class ReaderViewProvider implements WebviewViewProvider {
 		const cssUri = webview.asWebviewUri(Uri.joinPath(this._extensionUri, "media", "style.css"));
 		const scriptUri = webview.asWebviewUri(Uri.joinPath(this._extensionUri, "media", "script.js"));
 
-		const enable = this.folder.enable;
-		const bgType = this.folder.backgroundType;
-		const opacities = this.folder.elementsOpacity;
+		const enable = this.folder.enable.data;
+		const bgType = this.folder.bgType.data;
+		const opacities = this.folder.opacity.data;
 
 		const status = enable ? l10n.t("Enable") : l10n.t("Disable");
 		const statusPanel = l10n.t("Current Status");
 		const statusColor = enable ? "green" : "red";
 		const statusChangerLabel = enable ? l10n.t("BackImage to disable") : l10n.t("BackImage to enable");
-		const dataVScodeContext = JSON.stringify({
-			preventDefaultContextMenuItems: true
-		});
 
 		webview.options = {
 			enableScripts: true,
@@ -280,7 +289,7 @@ export class ReaderViewProvider implements WebviewViewProvider {
 		webview.onDidReceiveMessage(async (e) => {
 			const content = JSON.parse(e);
 			if (content.type === "enable") {
-				await this.folder.updateEnable(true);
+				await this.folder.enable.update(true);
 				await webview.postMessage(JSON.stringify({
 					type: "enable",
 					contents: {
@@ -292,7 +301,7 @@ export class ReaderViewProvider implements WebviewViewProvider {
 				}));
 			}
 			if (content.type === "disable") {
-				await this.folder.updateEnable(false);
+				await this.folder.enable.update(false);
 				await webview.postMessage(JSON.stringify({
 					type: "enable",
 					contents: {
@@ -312,19 +321,25 @@ export class ReaderViewProvider implements WebviewViewProvider {
 			if (content.type === "start") {
 				await webview.postMessage(JSON.stringify({
 					type: "start",
-					ids: this.folder.imageLists.map(value => value.id),
-					selects: this.folder.backgroundImg,
+					ids: this.folder.imgList.data.map(value => value.id),
+					selects: this.folder.bgImg.data,
 				}));
 			}
 			if (content.type === "updateSelect") {
-				await this.folder.updateBackgroundImg(content.id, content.content);
+				await this.folder.bgImg.update(content.id, content.content);
 			}
 			if (content.type === "updateOpacity") {
-				await this.folder.updateOpacity(content.id, content.content);
+				await this.folder.opacity.update(content.id, content.content);
+			}
+			if (content.type === "updateRandom") {
+				await this.folder.random.update(content.id, content.content);
+			}
+			if (content.type === "updateInterval") {
+				await this.folder.interval.update(content.id, content.content);
 			}
 			if (content.type === "imgList") {
 				if (content.action === "add") {
-					await this.folder.addImgList({
+					await this.folder.imgList.add({
 						id: Date.now().toString(),
 						name: Date.now().toString(),
 						type: content.fType,
@@ -333,17 +348,19 @@ export class ReaderViewProvider implements WebviewViewProvider {
 					});
 				}
 				if (content.action === "update") {
-					await this.folder.updateImgList(content.id, content.name, content.description, content.path);
+					await this.folder.imgList.update(content.id, content.name, content.description, content.path);
 				}
 				if (content.action === "remove") {
-					await this.folder.removeImgList(content.id);
+					await this.folder.imgList.remove(content.id);
+					await this.folder.random.update(content.id);
+					await this.folder.interval.update(content.id);
 				}
 				await webview.postMessage(JSON.stringify({
 					type: "updateImgList",
 					options: this.options,
 					imgs: this.imageLists,
-					ids: this.folder.imageLists.map(value => value.id),
-					selects: this.folder.backgroundImg,
+					ids: this.folder.imgList.data.map(value => value.id),
+					selects: this.folder.bgImg.data,
 				}));
 			}
 			if (content.type === "settingsUpdate") {
@@ -357,7 +374,7 @@ export class ReaderViewProvider implements WebviewViewProvider {
 				} else if (content.content === "fullscreen") {
 					bgType = "fullscreen";
 				}
-				await this.folder.updateBackgroundType(bgType);
+				await this.folder.bgType.update(bgType);
 				await webview.postMessage(JSON.stringify({
 					type: "settingsUpdate",
 					content: bgType,

@@ -25,5 +25,9 @@
     "Rename": "名前を変更",
     "Change description": "説明を変更",
     "Transparency": "透明度",
-    "Default": "デフォルト"
+    "Default": "デフォルト",
+    "Interval": "インターバル",
+    "Seconds": "秒",
+    "Random": "ランダム",
+    "*Press enter to save": "※Enterを押してセーブ"
 }

@@ -235,11 +235,35 @@ function scriptUpdate(ids) {
 		const descriptionUpdate = document.getElementById(`description-update-${id}`);
 		const moreInfoElement = document.getElementById(`more_info_${id}`);
 		const deleteSelectorElement = document.getElementById(`delete_final_confirmation_${id}`);
+		const folderRandomElement = document.getElementById(`random_${id}`);
+		const folderIntervalElement = document.getElementById(`interval_${id}`);
 
 		const editName = document.getElementById(`edit_name_${id}`);
 		const editPath = document.getElementById(`edit_path_${id}`);
 		const editDescription = document.getElementById(`edit_description_${id}`);
 		const elementType = document.getElementById(`element_type_${id}`).value;
+
+		if (folderRandomElement) {
+			folderRandomElement.onclick = async (e) => {
+				await vscode.postMessage(JSON.stringify({
+					type: "updateRandom",
+					id,
+					content: e.target.checked,
+				}));
+			};
+		}
+		if (folderIntervalElement) {
+			folderIntervalElement.onkeyup = async (e) => {
+				e.target.textContent = charChecker(e.target.textContent, [ "." ]);
+				if (e.key === "Enter") {
+					await vscode.postMessage(JSON.stringify({
+						type: "updateInterval",
+						id,
+						content: Number(e.target.textContent) * 1000,
+					}));
+				}
+			};
+		}
 
 		editPath.onclick = async () => {
 			await vscode.postMessage(JSON.stringify({
@@ -311,11 +335,12 @@ function scriptUpdate(ids) {
 	}
 }
 
-function charChecker(input) {
+function charChecker(input, add = []) {
 	let result = "";
 	const chars = input.split("");
+	const allowCharacters = extraInputAllowCharacter.concat(add);
 	for (const char of chars) {
-		if (extraInputAllowCharacter.includes(char)) {
+		if (allowCharacters.includes(char)) {
 			result += char;
 		}
 	}
