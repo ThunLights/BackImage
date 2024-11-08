@@ -133,7 +133,7 @@ export class ReaderViewProvider implements WebviewViewProvider {
 //		_token: CancellationToken,
 	) {
 		const { webview } = webviewView;
-		const codeIconUri = webview.asWebviewUri(Uri.joinPath(this._extensionUri, "node_modules", "@vscode/codicons", "dist", "codicon.css"));
+		const codeIconUri = webview.asWebviewUri(Uri.joinPath(this._extensionUri, "media", "codicon", "codicon.css"));
 		const cssUri = webview.asWebviewUri(Uri.joinPath(this._extensionUri, "media", "style.css"));
 		const scriptUri = webview.asWebviewUri(Uri.joinPath(this._extensionUri, "media", "script.js"));
 
