@@ -175,8 +175,6 @@ export class ReaderViewProvider implements WebviewViewProvider {
 				<main>
 					<div class="contents-block">
 						<button id="apply-settings-button" class="button padding-small-button">${l10n.t("Apply settings")}</button>
-					</div>
-					<div class="contents-block">
 						<button id="reset-settings-button" class="button padding-small-button">${l10n.t("Disable reflection of settings")}</button>
 					</div>
 					<div class="contents-block">

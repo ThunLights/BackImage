@@ -1,5 +1,6 @@
 {
     "backimage.img-explorer": "背景管理パネル",
     "backimage.refresh-title": "再読み込み",
-    "backimage.update-title": "設定読み込み"
+    "backimage.update-title": "設定読み込み",
+    "backimage.restore-title": "設定の反映を無効化する"
 }

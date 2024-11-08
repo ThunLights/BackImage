@@ -1,5 +1,6 @@
 {
     "backimage.img-explorer": "Management Panel",
     "backimage.refresh-title": "Refresh",
-    "backimage.update-title": "Apply Settings"
+    "backimage.update-title": "Apply Settings",
+    "backimage.restore-title": "Disable reflection of settings"
 }

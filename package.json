@@ -30,7 +30,8 @@
       },
       {
         "command": "extension.backimage.restore",
-        "title": "restore"
+        "title": "%backimage.restore-title%",
+        "icon": "$(discard)"
       }
     ],
     "viewsContainers": {
@@ -55,6 +56,11 @@
       "view/title": [
         {
           "command": "extension.backimage.refresh",
+          "group": "navigation",
+          "when": "view == extension.backimage.readerView"
+        },
+        {
+          "command": "extension.backimage.restore",
           "group": "navigation",
           "when": "view == extension.backimage.readerView"
         }
