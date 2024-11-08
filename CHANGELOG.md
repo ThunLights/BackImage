@@ -1,9 +1,23 @@
-# Change Log
+# BackImage's ChangeLog
 
-All notable changes to the "backimage" extension will be documented in this file.
+#### Languages
 
-Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this file.
+[English](./CHANGELOG.md)
 
-## [Unreleased]
+[日本語](./CHANGELOG.ja-JP.md)
 
-- Initial release
+## v1.0.0
+
+### Overview
+
+```
+All basic features implemented
+Some bugs present
+```
+
+### Issues
+
+```
+Testing on Linux and Mac has not been conducted
+There is a high possibility of errors occurring on platforms other than Windows
+```
