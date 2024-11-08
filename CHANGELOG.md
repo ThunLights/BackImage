@@ -6,6 +6,14 @@
 
 [日本語](./CHANGELOG.ja-JP.md)
 
+## v1.1.0 ~ v1.1.5
+
+### Overview
+
+```
+Fixed an issue where some buttons were not displayed.
+```
+
 ## v1.0.0
 
 ### Overview
