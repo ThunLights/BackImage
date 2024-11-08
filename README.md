@@ -1,71 +1,107 @@
-# backimage README
+# VScode-BackImage
 
-This is the README for your extension "backimage". After writing up a brief description, we recommend including the following sections.
+This is an extension that allows you to change the background in Visual Studio Code.
 
-## Features
+#### Other Languages: [English](./README.md) [日本語](./README.ja-JP.md)
 
-Describe specific features of your extension including screenshots of your extension in action. Image paths are relative to this README file.
+### Full Screen
 
-For example if there is an image subfolder under your extension project workspace:
+![image](./images/fullscreen.png)
 
-\!\[feature X\]\(images/feature-x.png\)
+### Specify different images for the sidebar, editor, and panel
 
-> Tip: Many popular extensions utilize animations. This is an excellent way to show off your extension! We recommend short, focused animations that are easy to follow.
+![image](./images/multiple.png)
 
-## Requirements
+## Actual Operation
 
-If you have any requirements or dependencies, add a section describing those and how to install and configure them.
+To set the background image, select the BackImage icon in the left tab and use the operation panel that appears.
 
-## Extension Settings
+![image](./images/activebar.png)
 
-Include if your extension adds any VS Code settings through the `contributes.configuration` extension point.
+#### 1: Add Image List (Right: Add File Left: Add Directory)
 
-For example:
+For directories, image files within will be reflected every few seconds.
 
-This extension contributes the following settings:
+#### 2: Select Image List (You can select for each type of background.)
 
-* `myExtension.enable`: Enable/disable this extension.
-* `myExtension.thing`: Set to `blah` to do something.
+If nothing is selected, the background will not change even if you enable background change.
 
-## Known Issues
+#### 3: Enable Background Change
 
-Calling out known issues can help limit users opening duplicate issues against your extension.
+If you turn ON full screen, you will not be able to change other settings, so please be careful.
 
-## Release Notes
+You can change it back to OFF to enable modifications.
 
-Users appreciate release notes as you update your extension.
+#### 4: Enable the Extension
 
-### 1.0.0
+#### 5: Reflect Settings
 
-Initial release of ...
+### Additionally
 
-### 1.0.1
+#### 6: Button to Use in Case of Bugs
 
-Fixed issue #.
+This will disable the extension and reset the internal CSS and JS.
 
-### 1.1.0
+This should return you to the normal state of VScode, eliminating any bugs.
 
-Added features X, Y, and Z.
+Please use it if something happens.
 
----
+#### Adjust Opacity
 
-## Following extension guidelines
+You can adjust the opacity using the UI that appears when you press the settings button.
 
-Ensure that you've read through the extensions guidelines and follow the best practices for creating your extension.
+![image](./images/opacity.png)
 
-* [Extension Guidelines](https://code.visualstudio.com/api/references/extension-guidelines)
+#### Detailed Settings for Image List
 
-## Working with Markdown
+By pressing the button next to the trash can icon, you can make detailed settings for the folder.
 
-You can author your README using Visual Studio Code. Here are some useful editor keyboard shortcuts:
+You can change the folder name and description, whether to display randomly, and the display time for each image.
 
-* Split the editor (`Cmd+\` on macOS or `Ctrl+\` on Windows and Linux).
-* Toggle preview (`Shift+Cmd+V` on macOS or `Shift+Ctrl+V` on Windows and Linux).
-* Press `Ctrl+Space` (Windows, Linux, macOS) to see a list of Markdown snippets.
+![image](./images/folder-settings.png)
 
-## For more information
+## Notes
 
-* [Visual Studio Code's Markdown Support](http://code.visualstudio.com/docs/languages/markdown)
-* [Markdown Syntax Reference](https://help.github.com/articles/markdown-basics/)
+This extension has not been tested on platforms other than Windows.
 
-**Enjoy!**
+If VScode becomes corrupted, it is recommended to reinstall it.
+
+For reasons why it may become corrupted, please see [here](#why-vscode-may-be-corrupted).
+
+Use at your own risk.
+
+## Why VScode May Be Corrupted
+
+VScode does not originally have an API to change CSS.
+
+Therefore, background-changing extensions, including this one, forcibly implement functionality by rewriting VScode's CSS and JS.
+
+As a result, it is susceptible to the environment, such as the OS and VScode version, and there is a possibility that this extension may suddenly become unusable or VScode itself may not start properly.
+
+In that case, please promptly reinstall the latest version of VScode.
+
+During reinstallation, the CSS and JS will be overwritten with the normal ones, so even if it is corrupted, it will be fixed.
+
+## About Development
+
+Please conduct issues and pull requests primarily in English.
+
+Commit messages can be in any language, but please include a rough English translation of each commit in the pull request description.
+
+*The developer, [ROBOT](https://github.com/ROBOTofficial), is Japanese and his first language is Japanese. He is somewhat not good at handling English and other languages. If there are any mistakes in the English text, kindly point them out.*
+
+Currently, this extension only supports Japanese and English.
+
+If anyone can translate it into other languages, it would be greatly appreciated.
+
+Pull requests for code optimization are also very welcome.
+
+If you are looking to optimize the code, please participate in development through pull requests.
+
+## References
+
+This extension is created based on the following two repositories.
+
+### [vscode-background](https://github.com/shalldie/vscode-background)
+
+### [vscode-background-cover](https://github.com/AShujiao/vscode-background-cover)
