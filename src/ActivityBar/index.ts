@@ -60,7 +60,7 @@ export class ReaderViewProvider implements WebviewViewProvider {
 								` : ""}
 								<p class="inline">${l10n.t("Description")}</p>
 								<i id="edit_description_${id}" class="inline info-buttons codicon codicon-edit" style="display: none;"></i>
-								<p>${this.descriptionParser(description)}</p>
+								<p>${this.descriptionParser(img.description)}</p>
 								<p class="caution break-all">${l10n.t("ID")}: ${id}</p>
 							</div>
 							<div id="delete_final_confirmation_${id}" class="delete_final_confirmation" style="display: none;">
