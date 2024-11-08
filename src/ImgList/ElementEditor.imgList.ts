@@ -23,6 +23,7 @@ export class ImgListEditor extends ElementEditor {
     }
 
     public async add(folder: Folder) {
+        folder.description = folder.description.trim();
         const imgList = this.data;
         imgList.push(folder);
         await this._context.globalState.update(ImgListEditor._key, imgList);
@@ -36,7 +37,7 @@ export class ImgListEditor extends ElementEditor {
             type: value.type,
             path: path ?? value.path,
             name: name ?? value.name,
-            description: description ?? value.description,
+            description: description ? description.trim() : value.description,
         } : value);
         await this._context.globalState.update(ImgListEditor._key, imgList);
         return imgList;
