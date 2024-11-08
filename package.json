@@ -2,7 +2,7 @@
   "name": "backimage",
   "displayName": "backImage",
   "description": "This plugin allows you to add a background image.",
-  "version": "0.0.1",
+  "version": "1.0.0",
   "license": "MIT",
   "publisher": "robot",
   "engines": {
@@ -89,6 +89,8 @@
     "test": "vscode-test"
   },
   "devDependencies": {
+    "@trivago/prettier-plugin-sort-imports": "^4.3.0",
+    "@types/eslint-config-prettier": "^6.11.3",
     "@types/mocha": "^10.0.9",
     "@types/node": "20.x",
     "@types/uglify-js": "^3.17.5",
@@ -99,6 +101,8 @@
     "@vscode/test-cli": "^0.0.10",
     "@vscode/test-electron": "^2.4.1",
     "eslint": "^9.13.0",
+    "eslint-config-prettier": "^9.1.0",
+    "prettier": "3.3.3",
     "stylis": "^4.3.4",
     "ts-loader": "^9.5.1",
     "typescript": "^5.6.3",
