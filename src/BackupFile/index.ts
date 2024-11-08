@@ -61,6 +61,7 @@ export class FileBackuController {
 
     public async update(folder: FolderController): Promise<boolean> {
         if (folder.enable.data && folder.bgType.data) {
+            const base = fs.readFileSync(BACKUP_JS_PATH, ENCODING);
             const content = this.getContent;
             const patchContent = await PatchGenerator.create(folder);
             if (patchContent instanceof PatchGeneratorError) {
@@ -69,7 +70,7 @@ export class FileBackuController {
             }
             const start = `//${ORIGINAL_JS_CONTENT_START}-${hash(patchContent)}`;
             const end = `//${ORIGINAL_JS_CONTENT_END}`;
-            const newContent = [ content.js, start, patchContent, end ].join("\n");
+            const newContent = [ base, start, patchContent, end ].join("\n");
             if (content.js.includes(start)) {
                 return false;
             }

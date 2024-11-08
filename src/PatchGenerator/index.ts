@@ -64,8 +64,7 @@ export class PatchGenerator {
                         interval,
                     },
                 }).create());
-            }
-            if (Array.isArray(folder.bgType.data)) {
+            } else if (Array.isArray(folder.bgType.data)) {
                 if (folder.bgType.data.includes("panel") && folder.bgImg.data.panel) {
                     const data = await PatchGenerator.exchangeData(folder.bgImg.data.panel, folder);
                     if (data instanceof PatchGeneratorError) {
