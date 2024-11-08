@@ -1,10 +1,11 @@
 {
   "name": "backimage",
   "displayName": "backImage",
-  "description": "This plugin allows you to add a background image.",
+  "description": "This is an extension for changing the background image of vscode.",
   "version": "1.0.0",
   "license": "MIT",
-  "publisher": "robot",
+  "publisher": "ROBOTofficial",
+  "icon": "resources/icon.png",
   "engines": {
     "vscode": "^1.94.0"
   },
