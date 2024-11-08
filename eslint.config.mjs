@@ -1,7 +1,10 @@
 import typescriptEslint from "@typescript-eslint/eslint-plugin";
 import tsParser from "@typescript-eslint/parser";
+import eslintConfigPrettier from "eslint-config-prettier";
 
-export default [{
+export default [
+    eslintConfigPrettier,
+    {
     files: ["**/*.ts"],
 }, {
     plugins: {
