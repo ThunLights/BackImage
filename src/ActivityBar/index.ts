@@ -84,7 +84,7 @@ export class ReaderViewProvider implements WebviewViewProvider {
 									<p>${l10n.t("Change description")}: (${l10n.t("Now")} <strong id="description_${id}">${description}</strong>)</p>
 								</div>
 								<div>
-									<textarea id="update-description-content-${id}" value="${description}"></textarea>
+									<textarea id="update-description-content-${id}">${description}</textarea>
 								</div>
 								<div class="delete_final_confirmation">
 									<button id="update_description_cancel_${id}">${l10n.t("Cancel")}</button>
