@@ -25,6 +25,7 @@ export async function activate(context: ExtensionContext) {
 			}
 		}),
 		commands.registerCommand("extension.backimage.restore", async () => {
+			await folder.enable.update(false);
 			await backup.restore();
 			await commands.executeCommand("workbench.action.reloadWindow");
 		}),
