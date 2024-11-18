@@ -6,6 +6,14 @@
 
 [日本語](./CHANGELOG.ja-JP.md)
 
+## v1.1.6
+
+### Overview
+
+```
+Fixed the issue where the "Reset VScode to Default" button in the upper right corner of the management panel was not functioning properly.
+```
+
 ## v1.1.0 ~ v1.1.5
 
 ### Overview
