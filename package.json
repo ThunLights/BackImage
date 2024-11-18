@@ -101,7 +101,7 @@
     "@vscode/sudo-prompt": "^9.3.1",
     "@vscode/test-cli": "^0.0.10",
     "@vscode/test-electron": "^2.4.1",
-    "eslint": "^9.13.0",
+    "eslint": "^9.15.0",
     "eslint-config-prettier": "^9.1.0",
     "prettier": "3.3.3",
     "stylis": "^4.3.4",
