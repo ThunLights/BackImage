@@ -320,7 +320,6 @@ export class ReaderViewProvider implements WebviewViewProvider {
 				console.log(content.text);
 			}
 			if (content.type === "restore") {
-				await this.folder.enable.update(false);
 				await commands.executeCommand("extension.backimage.restore");
 			}
 			if (content.type === "start") {
