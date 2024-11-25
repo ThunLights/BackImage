@@ -105,3 +105,9 @@ This extension is created based on the following two repositories.
 ### [vscode-background](https://github.com/shalldie/vscode-background)
 
 ### [vscode-background-cover](https://github.com/AShujiao/vscode-background-cover)
+
+## Citation
+
+### ©まどそふと
+
+> The background in the screenshots in this extension's README uses [the work](https://madosoft.net/hamidashi/).
