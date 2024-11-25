@@ -107,3 +107,9 @@ Commit Messageは何語でも構いませんがPull Requestの説明文に大雑
 ### [vscode-background](https://github.com/shalldie/vscode-background)
 
 ### [vscode-background-cover](https://github.com/AShujiao/vscode-background-cover)
+
+## 引用
+
+### ©まどそふと
+
+> 本拡張機能のREADMEにて、スクリーンショットで背景に [作品](https://madosoft.net/totsu/) を使用
