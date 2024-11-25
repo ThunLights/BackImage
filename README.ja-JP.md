@@ -112,4 +112,4 @@ Commit Messageは何語でも構いませんがPull Requestの説明文に大雑
 
 ### ©まどそふと
 
-> 本拡張機能のREADMEにて、スクリーンショットで背景に [作品](https://madosoft.net/totsu/) を使用
+> 本拡張機能のREADMEにて、スクリーンショットで背景に [作品](https://madosoft.net/hamidashi/) を使用

@@ -110,4 +110,4 @@ This extension is created based on the following two repositories.
 
 ### ©まどそふと
 
-> The background in the screenshots in this extension's README uses the [work](https://madosoft.net/totsu/).
+> The background in the screenshots in this extension's README uses [the work](https://madosoft.net/hamidashi/).
